@@ -1,1 +1,1109 @@
-CAPTURE_TEST
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NutriRecipe — 精密栄養学 × DGA</title>
+<style>
+:root{
+  --g:#2d6a4f;--gl:#52b788;--gd:#1b4332;
+  --acc:#f4a261;--bg:#f6f8f5;--sur:#fff;
+  --tx:#1a2520;--muted:#6b7b70;--bd:#dde5dd;
+  --red:#e63946;--r:14px;
+  --sh:0 2px 12px rgba(0,0,0,.07);
+  --shh:0 8px 28px rgba(0,0,0,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','Hiragino Kaku Gothic ProN','Meiryo',sans-serif;background:var(--bg);color:var(--tx);line-height:1.65}
+
+/* ── PROFILE ── */
+#profile-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(140deg,#1b4332,#2d6a4f 55%,#74c69d);padding:20px}
+.pc{background:#fff;border-radius:22px;padding:44px 40px;max-width:540px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.22)}
+.ph{text-align:center;margin-bottom:28px}
+.ph .logo{font-size:2.8rem;margin-bottom:6px}
+.ph h1{font-size:1.6rem;color:var(--gd);font-weight:800}
+.ph p{color:var(--muted);font-size:.86rem;margin-top:6px}
+.si{display:flex;justify-content:center;gap:8px;margin-bottom:28px}
+.sd{width:10px;height:10px;border-radius:50%;background:var(--bd);transition:all .3s}
+.sd.active{background:var(--g);transform:scale(1.4)}
+.sd.done{background:var(--gl)}
+.st{font-size:1.05rem;font-weight:700;color:var(--gd);margin-bottom:18px;text-align:center}
+.og{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.og.t3{grid-template-columns:repeat(3,1fr)}
+.ob{border:2px solid var(--bd);border-radius:12px;padding:16px 12px;cursor:pointer;transition:all .2s;text-align:center;background:#fff}
+.ob:hover{border-color:var(--gl);background:#f0faf5}
+.ob.sel{border-color:var(--g);background:#e6f4ee}
+.ob .ic{font-size:1.9rem;margin-bottom:6px}
+.ob .lb{font-size:.84rem;font-weight:700}
+.ob .sb{font-size:.73rem;color:var(--muted);margin-top:2px}
+.gg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.gb{border:2px solid var(--bd);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;background:#fff;display:flex;align-items:center;gap:10px}
+.gb:hover{border-color:var(--gl);background:#f0faf5}
+.gb.sel{border-color:var(--g);background:#e6f4ee}
+.gb .gi{font-size:1.4rem}.gb .gt{font-size:.84rem;font-weight:700}
+.bp{background:var(--g);color:#fff;border:none;border-radius:12px;padding:14px 28px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:all .2s}
+.bp:hover{background:var(--gd);transform:translateY(-1px)}
+.bs{background:transparent;color:var(--muted);border:none;padding:10px;font-size:.88rem;cursor:pointer;width:100%;margin-top:8px}
+
+/* ── APP ── */
+#app-screen{display:none}
+.ah{background:#fff;border-bottom:1px solid var(--bd);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
+.al{display:flex;align-items:center;gap:10px;font-size:1.18rem;font-weight:800;color:var(--gd)}
+.al .ae{font-size:1.5rem}
+.al small{font-size:.7rem;font-weight:400;color:var(--muted)}
+.pb{display:flex;align-items:center;gap:7px;padding:7px 14px;background:#e6f4ee;border-radius:20px;font-size:.8rem;color:var(--gd);font-weight:600;cursor:pointer}
+.ab{max-width:1380px;margin:0 auto;padding:24px;display:grid;grid-template-columns:290px 1fr;gap:24px}
+@media(max-width:860px){.ab{grid-template-columns:1fr;padding:14px}.sb-wrap{display:none}}
+
+/* ── SIDEBAR ── */
+.sb-wrap{display:flex;flex-direction:column;gap:16px}
+.sc{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.sc h3{font-size:.8rem;font-weight:800;color:var(--gd);margin-bottom:14px;text-transform:uppercase;letter-spacing:.6px}
+.dt{margin-bottom:12px}
+.dh{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:5px}
+.dn{font-weight:700}.dv{color:var(--muted)}
+.pb2{height:7px;background:#e8ede9;border-radius:4px;overflow:hidden}
+.pf{height:100%;border-radius:4px;transition:width .5s}
+.dp{display:flex;flex-direction:column;gap:7px}
+.di{display:flex;align-items:flex-start;gap:7px;font-size:.77rem;color:var(--muted);padding:7px;background:var(--bg);border-radius:8px}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;background:#fff;border-radius:var(--r);padding:6px;box-shadow:var(--sh)}
+.tab{flex:1;padding:10px;border:none;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s}
+.tab.act{background:var(--g);color:#fff}
+
+/* ── TAB CONTENT ── */
+.tc{display:none}.tc.act{display:block}
+
+/* ── BANNER ── */
+.rb{background:linear-gradient(135deg,var(--gd),var(--g) 60%,var(--gl));border-radius:var(--r);padding:20px 24px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
+.rb h2{font-size:1.05rem;font-weight:800}
+.rb p{font-size:.8rem;opacity:.85;margin-top:3px}
+.mc{background:#fff;color:var(--g);border-radius:50%;width:62px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;flex-shrink:0}
+.mc small{font-size:.58rem;font-weight:500}
+
+/* ── SEARCH/FILTER ── */
+.sf{background:#fff;border-radius:var(--r);padding:18px;box-shadow:var(--sh);margin-bottom:16px}
+.sbar{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:9px 14px;margin-bottom:12px}
+.sbar input{border:none;background:transparent;flex:1;font-size:.93rem;outline:none}
+.fcs{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 13px;border:1px solid var(--bd);border-radius:20px;font-size:.77rem;cursor:pointer;transition:all .2s;background:#fff;color:var(--muted)}
+.chip:hover{border-color:var(--gl);color:var(--g)}
+.chip.act{background:var(--g);color:#fff;border-color:var(--g)}
+
+/* ── RECIPE GRID ── */
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:18px}
+.rc{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);cursor:pointer;transition:all .25s}
+.rc:hover{transform:translateY(-4px);box-shadow:var(--shh)}
+.rth{height:140px;display:flex;align-items:center;justify-content:center;font-size:3.8rem;position:relative}
+.rb2{position:absolute;top:9px;right:9px;display:flex;flex-direction:column;gap:3px;align-items:flex-end}
+.bdg{padding:3px 7px;border-radius:10px;font-size:.67rem;font-weight:700;color:#fff}
+.bg{background:var(--g)}.bo{background:var(--acc)}
+.ri{padding:14px}
+.rcat{font-size:.68rem;font-weight:800;color:var(--g);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.rn{font-size:.96rem;font-weight:700;margin-bottom:6px;line-height:1.35}
+.rm{display:flex;gap:9px;font-size:.74rem;color:var(--muted);margin-bottom:9px}
+.nts{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:9px}
+.nt{padding:2px 7px;background:#e6f4ee;color:var(--gd);border-radius:5px;font-size:.68rem;font-weight:700}
+.rf{display:flex;justify-content:space-between;align-items:center;padding-top:9px;border-top:1px solid var(--bd)}
+.rmac{font-size:.78rem;font-weight:700;color:var(--gd)}
+.rmac small{font-weight:400;color:var(--muted)}
+.dstar{color:var(--acc);font-size:.82rem}
+/* log button on card */
+.log-btn{display:block;width:100%;margin-top:8px;padding:7px;background:#e6f4ee;border:none;border-radius:8px;color:var(--gd);font-size:.78rem;font-weight:700;cursor:pointer;transition:all .2s}
+.log-btn:hover{background:var(--g);color:#fff}
+
+/* ── MEAL LOG TAB ── */
+.meal-log-wrap{display:flex;flex-direction:column;gap:16px}
+.log-summary{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.log-summary h3{font-size:1rem;font-weight:800;color:var(--gd);margin-bottom:16px}
+.nut-progress{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.np-item{background:var(--bg);border-radius:10px;padding:12px}
+.np-name{font-size:.76rem;font-weight:700;margin-bottom:4px}
+.np-vals{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:5px}
+.np-bar{height:8px;background:#e0e8e0;border-radius:4px;overflow:hidden}
+.np-fill{height:100%;border-radius:4px;transition:width .5s}
+.log-entries{background:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.log-entries h3{font-size:.95rem;font-weight:800;color:var(--gd);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.log-date-nav{display:flex;align-items:center;gap:10px;font-size:.84rem;font-weight:700;color:var(--gd)}
+.log-date-nav button{background:none;border:1px solid var(--bd);border-radius:8px;padding:4px 10px;cursor:pointer;font-size:.8rem}
+.log-empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.log-entry{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg);border-radius:10px;margin-bottom:8px}
+.le-emoji{font-size:2rem;flex-shrink:0}
+.le-info{flex:1}
+.le-name{font-size:.86rem;font-weight:700;margin-bottom:2px}
+.le-meta{font-size:.75rem;color:var(--muted)}
+.le-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:4px}
+.le-del:hover{color:var(--red)}
+.log-total{background:linear-gradient(135deg,var(--gd),var(--g));border-radius:var(--r);padding:16px 20px;color:#fff;margin-top:4px}
+.log-total h4{font-size:.84rem;margin-bottom:10px;opacity:.85}
+.tot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tot-item{text-align:center}
+.tot-v{font-size:1.1rem;font-weight:800}
+.tot-l{font-size:.65rem;opacity:.8}
+
+/* ── MY RECIPES TAB ── */
+.my-recipes-wrap{display:flex;flex-direction:column;gap:16px}
+.add-recipe-btn{display:flex;align-items:center;gap:10px;background:var(--g);color:#fff;border:none;border-radius:var(--r);padding:16px 22px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;justify-content:center;transition:all .2s}
+.add-recipe-btn:hover{background:var(--gd);transform:translateY(-1px)}
+.my-recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:18px}
+.no-results{text-align:center;padding:50px 20px;color:var(--muted)}
+.no-results .ni{font-size:3rem;margin-bottom:10px}
+
+/* ── MODAL ── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:1000;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;visibility:hidden;transition:all .28s}
+.mo.open{opacity:1;visibility:visible}
+.md{background:#fff;border-radius:20px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;transform:translateY(18px);transition:transform .28s}
+.mo.open .md{transform:translateY(0)}
+.mh{height:180px;display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative;border-radius:20px 20px 0 0}
+.mc2{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mb{padding:24px 26px}
+.mcat{font-size:.73rem;font-weight:800;color:var(--g);text-transform:uppercase;letter-spacing:.5px}
+.mti{font-size:1.45rem;font-weight:800;margin:5px 0 8px}
+.mde{color:var(--muted);font-size:.87rem;margin-bottom:18px}
+.ms{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.sb2{text-align:center;padding:13px 8px;background:var(--bg);border-radius:10px}
+.sv{font-size:1.2rem;font-weight:800;color:var(--gd)}
+.sl{font-size:.7rem;color:var(--muted);margin-top:2px}
+.sec{font-size:.94rem;font-weight:800;margin-bottom:11px;padding-bottom:7px;border-bottom:2px solid var(--gl)}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:20px}
+.ii{display:flex;align-items:center;gap:7px;font-size:.8rem;padding:6px;background:var(--bg);border-radius:7px}
+.id{width:7px;height:7px;border-radius:50%;background:var(--gl);flex-shrink:0}
+.sl2{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.si2{display:flex;gap:11px}
+.sn{width:26px;height:26px;border-radius:50%;background:var(--g);color:#fff;font-size:.77rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.st2{font-size:.83rem;padding-top:4px}
+.nt2{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:20px}
+.nt2 th{background:var(--gd);color:#fff;padding:8px 11px;text-align:left}
+.nt2 td{padding:7px 11px;border-bottom:1px solid var(--bd)}
+.nt2 tr:nth-child(even) td{background:var(--bg)}
+.dvb{height:6px;background:#e0e8e0;border-radius:3px;overflow:hidden;min-width:70px}
+.dvf{height:100%;border-radius:3px}
+.dgb{background:#e6f4ee;border-radius:12px;padding:15px;margin-bottom:20px}
+.dgb h4{font-size:.87rem;font-weight:800;color:var(--gd);margin-bottom:11px}
+.dgr{display:grid;grid-template-columns:105px 1fr 55px;align-items:center;gap:8px;font-size:.77rem;margin-bottom:6px}
+.gts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.gta{padding:5px 11px;border-radius:18px;font-size:.76rem;font-weight:700}
+.gtm{background:#e6f4ee;color:var(--gd)}.gto{background:#dbeafe;color:#1e3a8a}
+.dn2{background:#fff8e7;border-left:4px solid var(--acc);padding:13px;border-radius:0 8px 8px 0;margin-bottom:20px}
+.dn2 p{font-size:.79rem;color:#5a4000}
+/* add to log button in modal */
+.add-log-btn{display:block;width:100%;padding:13px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;margin-bottom:16px;transition:all .2s}
+.add-log-btn:hover{background:var(--gd)}
+
+/* ── CUSTOM RECIPE FORM MODAL ── */
+#form-modal{position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:1100;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;visibility:hidden;transition:all .28s}
+#form-modal.open{opacity:1;visibility:visible}
+.fm{background:#fff;border-radius:20px;max-width:640px;width:100%;max-height:92vh;overflow-y:auto}
+.fm-head{background:linear-gradient(135deg,var(--gd),var(--g));border-radius:20px 20px 0 0;padding:22px 26px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.fm-head h2{font-size:1.15rem;font-weight:800}
+.fm-close{background:rgba(255,255,255,.2);border:none;border-radius:50%;width:32px;height:32px;color:#fff;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fm-body{padding:24px 26px}
+.fg{margin-bottom:18px}
+.fg label{display:block;font-size:.82rem;font-weight:700;color:var(--gd);margin-bottom:6px}
+.fg input,.fg select,.fg textarea{width:100%;border:1.5px solid var(--bd);border-radius:9px;padding:9px 12px;font-size:.88rem;outline:none;transition:border-color .2s;font-family:inherit}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--g)}
+.fg textarea{resize:vertical;min-height:80px}
+.fg .hint{font-size:.72rem;color:var(--muted);margin-top:4px}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fg-row4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.goal-checks{display:flex;flex-wrap:wrap;gap:8px}
+.gc{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1.5px solid var(--bd);border-radius:20px;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s}
+.gc:hover{border-color:var(--gl)}
+.gc.checked{border-color:var(--g);background:#e6f4ee;color:var(--gd)}
+.gc input{display:none}
+.fm-actions{display:flex;gap:10px;margin-top:4px}
+.fm-submit{flex:1;padding:13px;background:var(--g);color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s}
+.fm-submit:hover{background:var(--gd)}
+.fm-cancel{padding:13px 20px;background:var(--bg);color:var(--muted);border:1.5px solid var(--bd);border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer}
+.custom-badge{background:#f0a500;color:#fff;font-size:.62rem;font-weight:700;padding:2px 6px;border-radius:6px;margin-left:4px}
+</style>
+</head>
+<body>
+
+<!-- ══ PROFILE SETUP ══ -->
+<div id="profile-screen">
+<div class="pc">
+  <div class="ph">
+    <div class="logo">🥗</div>
+    <h1>NutriRecipe</h1>
+    <p>精密栄養学 × DGA 2025-2030<br>あなた専用のパーソナライズドレシピ</p>
+  </div>
+  <div class="si">
+    <div class="sd active" id="d0"></div>
+    <div class="sd" id="d1"></div>
+    <div class="sd" id="d2"></div>
+  </div>
+  <div id="s0">
+    <div class="st">年齢グループと性別</div>
+    <div style="margin-bottom:18px">
+      <div style="font-size:.8rem;font-weight:700;margin-bottom:10px;color:#555">年齢グループ</div>
+      <div class="og t3">
+        <div class="ob" onclick="pick('age','19-30',this)"><div class="ic">🧑</div><div class="lb">20〜30代</div></div>
+        <div class="ob" onclick="pick('age','31-50',this)"><div class="ic">🧑‍💼</div><div class="lb">31〜50代</div></div>
+        <div class="ob" onclick="pick('age','51+',this)"><div class="ic">🧓</div><div class="lb">51歳以上</div></div>
+      </div>
+    </div>
+    <div style="margin-bottom:22px">
+      <div style="font-size:.8rem;font-weight:700;margin-bottom:10px;color:#555">性別</div>
+      <div class="og">
+        <div class="ob" onclick="pick('sex','female',this)"><div class="ic">👩</div><div class="lb">女性</div></div>
+        <div class="ob" onclick="pick('sex','male',this)"><div class="ic">👨</div><div class="lb">男性</div></div>
+      </div>
+    </div>
+    <button class="bp" onclick="gst(1)">次へ →</button>
+  </div>
+  <div id="s1" style="display:none">
+    <div class="st">普段の活動レベル</div>
+    <div class="og" style="grid-template-columns:1fr">
+      <div class="ob" onclick="pick('activity','sedentary',this)" style="display:flex;align-items:center;text-align:left;gap:14px;padding:14px 18px"><span style="font-size:2rem">🪑</span><div><div class="lb">座り仕事中心（低活動）</div><div class="sb">デスクワーク・ほとんど歩かない</div></div></div>
+      <div class="ob" onclick="pick('activity','moderate',this)" style="display:flex;align-items:center;text-align:left;gap:14px;padding:14px 18px"><span style="font-size:2rem">🚶</span><div><div class="lb">中程度（週2〜3回）</div><div class="sb">通勤で歩く・軽い運動あり</div></div></div>
+      <div class="ob" onclick="pick('activity','active',this)" style="display:flex;align-items:center;text-align:left;gap:14px;padding:14px 18px"><span style="font-size:2rem">🏃</span><div><div class="lb">高活動（週4〜5回以上）</div><div class="sb">定期的な運動・体を動かす仕事</div></div></div>
+    </div>
+    <button class="bp" onclick="gst(2)">次へ →</button>
+    <button class="bs" onclick="gst(0)">← 戻る</button>
+  </div>
+  <div id="s2" style="display:none">
+    <div class="st">健康目標（複数可）</div>
+    <div class="gg">
+      <div class="gb" onclick="tgl('weight',this)"><span class="gi">⚖️</span><span class="gt">体重管理</span></div>
+      <div class="gb" onclick="tgl('heart',this)"><span class="gi">❤️</span><span class="gt">心臓・血管ケア</span></div>
+      <div class="gb" onclick="tgl('bone',this)"><span class="gi">🦴</span><span class="gt">骨・関節強化</span></div>
+      <div class="gb" onclick="tgl('energy',this)"><span class="gi">⚡</span><span class="gt">エネルギー回復</span></div>
+      <div class="gb" onclick="tgl('beauty',this)"><span class="gi">✨</span><span class="gt">美肌・美髪ケア</span></div>
+      <div class="gb" onclick="tgl('gut',this)"><span class="gi">🌿</span><span class="gt">腸活・免疫アップ</span></div>
+    </div>
+    <button class="bp" onclick="launch()">レシピを見る 🚀</button>
+    <button class="bs" onclick="gst(1)">← 戻る</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ APP SCREEN ══ -->
+<div id="app-screen">
+<header class="ah">
+  <div class="al"><span class="ae">🥗</span><div>NutriRecipe<br><small>精密栄養学 × DGA 2025-2030</small></div></div>
+  <div class="pb" onclick="resetApp()"><span>👤</span><span id="pt">---</span><span style="font-size:.67rem;opacity:.6">変更</span></div>
+</header>
+<div class="ab">
+  <!-- SIDEBAR -->
+  <aside class="sb-wrap">
+    <div class="sc">
+      <h3>📊 推奨栄養素 / 日</h3>
+      <div id="daily-targets"></div>
+    </div>
+    <div class="sc">
+      <h3>📋 DGA 2025-2030</h3>
+      <div class="dp">
+        <div class="di"><span>🥩</span><span><b>本物の食品</b>を食べる — 超加工食品を避ける</span></div>
+        <div class="di"><span>💪</span><span>毎食タンパク質を優先（1.2〜1.6g/kg/日）</span></div>
+        <div class="di"><span>🥛</span><span>フルファット乳製品を1日3サービング</span></div>
+        <div class="di"><span>🥦</span><span>野菜3+果物2サービング／全粒穀物2〜4</span></div>
+        <div class="di"><span>🫒</span><span>健康的な脂肪を優先（オリーブ油・卵・ナッツ）</span></div>
+        <div class="di"><span>🚫</span><span>添加糖・人工着色料・精製炭水化物を制限</span></div>
+      </div>
+    </div>
+  </aside>
+  <!-- MAIN -->
+  <main>
+    <div class="tabs" style="margin-bottom:16px">
+      <button class="tab act" onclick="switchTab('recipes',this)">🍽️ レシピ</button>
+      <button class="tab" onclick="switchTab('log',this)">📓 食事記録</button>
+      <button class="tab" onclick="switchTab('my',this)">⭐ マイレシピ</button>
+    </div>
+
+    <!-- TAB: RECIPES -->
+    <div id="tab-recipes" class="tc act">
+      <div class="rb">
+        <div><h2 id="rec-title">おすすめレシピ</h2><p id="rec-sub">プロフィールに基づいてパーソナライズ</p></div>
+        <div class="mc"><span id="rec-score">--%</span><small>マッチ度</small></div>
+      </div>
+      <div class="sf">
+        <div class="sbar"><span>🔍</span><input type="text" placeholder="レシピ名・食材で検索..." id="si" oninput="flt()"></div>
+        <div class="fcs">
+          <div class="chip act" onclick="setF('all',this)">すべて</div>
+          <div class="chip" onclick="setF('breakfast',this)">🌅 朝食</div>
+          <div class="chip" onclick="setF('lunch',this)">☀️ 昼食</div>
+          <div class="chip" onclick="setF('dinner',this)">🌙 夕食</div>
+          <div class="chip" onclick="setF('snack',this)">🍽️ 間食</div>
+          <div class="chip" onclick="setF('vegetarian',this)">🌿 ベジタリアン</div>
+          <div class="chip" onclick="setF('fish',this)">🐟 魚介</div>
+          <div class="chip" onclick="setF('highprotein',this)">💪 高タンパク</div>
+          <div class="chip" onclick="setF('lowcalorie',this)">🏃 低カロリー</div>
+        </div>
+      </div>
+      <div class="rg" id="rg"></div>
+    </div>
+
+    <!-- TAB: MEAL LOG -->
+    <div id="tab-log" class="tc">
+      <div class="meal-log-wrap">
+        <div class="log-summary">
+          <h3>📊 今日の栄養摂取状況</h3>
+          <div class="nut-progress" id="nut-prog"></div>
+          <div class="log-total" id="log-total" style="display:none">
+            <h4>本日合計</h4>
+            <div class="tot-grid" id="tot-grid"></div>
+          </div>
+        </div>
+        <div class="log-entries">
+          <h3>
+            <span>🍽️ 食事記録</span>
+            <div class="log-date-nav">
+              <button onclick="changeLogDate(-1)">◀</button>
+              <span id="log-date-label"></span>
+              <button onclick="changeLogDate(1)">▶</button>
+            </div>
+          </h3>
+          <div id="log-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: MY RECIPES -->
+    <div id="tab-my" class="tc">
+      <div class="my-recipes-wrap">
+        <button class="add-recipe-btn" onclick="openForm()">＋ オリジナルレシピを追加する</button>
+        <div class="my-recipe-grid" id="my-rg"></div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- ══ RECIPE DETAIL MODAL ══ -->
+<div class="mo" id="det-modal" onclick="closeDet(event)">
+  <div class="md" id="det-inner"></div>
+</div>
+
+<!-- ══ CUSTOM RECIPE FORM MODAL ══ -->
+<div id="form-modal">
+<div class="fm">
+  <div class="fm-head">
+    <h2>📝 オリジナルレシピを追加</h2>
+    <button class="fm-close" onclick="closeForm()">✕</button>
+  </div>
+  <div class="fm-body">
+    <input type="hidden" id="edit-id" value="">
+    <div class="fg">
+      <label>レシピ名 *</label>
+      <input type="text" id="f-name" placeholder="例：チキンと野菜の炒め物">
+    </div>
+    <div class="fg-row">
+      <div class="fg">
+        <label>カテゴリ *</label>
+        <select id="f-cat">
+          <option value="breakfast">朝食</option>
+          <option value="lunch">昼食</option>
+          <option value="dinner" selected>夕食</option>
+          <option value="snack">間食</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>絵文字アイコン</label>
+        <input type="text" id="f-emoji" placeholder="🍳" maxlength="2">
+      </div>
+    </div>
+    <div class="fg-row">
+      <div class="fg">
+        <label>調理時間（分）</label>
+        <input type="number" id="f-time" placeholder="20" min="1">
+      </div>
+      <div class="fg">
+        <label>難易度</label>
+        <select id="f-diff">
+          <option value="易">易</option>
+          <option value="中" selected>中</option>
+          <option value="難">難</option>
+        </select>
+      </div>
+    </div>
+    <div class="sec" style="margin-bottom:12px">栄養成分（1人分）</div>
+    <div class="fg-row4">
+      <div class="fg"><label>カロリー(kcal)</label><input type="number" id="f-cal" placeholder="400" min="0"></div>
+      <div class="fg"><label>タンパク質(g)</label><input type="number" id="f-pro" placeholder="20" min="0"></div>
+      <div class="fg"><label>炭水化物(g)</label><input type="number" id="f-car" placeholder="40" min="0"></div>
+      <div class="fg"><label>脂質(g)</label><input type="number" id="f-fat" placeholder="12" min="0"></div>
+    </div>
+    <div class="fg-row3">
+      <div class="fg"><label>食物繊維(g)</label><input type="number" id="f-fib" placeholder="5" min="0"></div>
+      <div class="fg"><label>鉄分(mg)</label><input type="number" id="f-iro" placeholder="3" min="0"></div>
+      <div class="fg"><label>カルシウム(mg)</label><input type="number" id="f-cal2" placeholder="100" min="0"></div>
+    </div>
+    <div class="fg">
+      <label>健康目標タグ</label>
+      <div class="goal-checks">
+        <label class="gc" onclick="this.classList.toggle('checked')"><input type="checkbox" name="fg" value="weight">⚖️ 体重管理</label>
+        <label class="gc" onclick="this.classList.toggle('checked')"><input type="checkbox" name="fg" value="heart">❤️ 心臓ケア</label>
+        <label class="gc" onclick="this.classList.toggle('checked')"><input type="checkbox" name="fg" value="bone">🦴 骨強化</label>
+        <label class="gc" onclick="this.classList.toggle('checked')"><input type="checkbox" name="fg" value="energy">⚡ エネルギー</label>
+        <label class="gc" onclick="this.classList.toggle('checked')"><input type="checkbox" name="fg" value="beauty">✨ 美肌・美髪</label>
+        <label class="gc" onclick="this.classList.toggle('checked')"><input type="checkbox" name="fg" value="gut">🌿 腸活</label>
+      </div>
+    </div>
+    <div class="fg">
+      <label>食材（1行に1つ）</label>
+      <textarea id="f-ing" placeholder="鶏胸肉 200g&#10;ブロッコリー 150g&#10;オリーブオイル 大さじ1" rows="5"></textarea>
+    </div>
+    <div class="fg">
+      <label>作り方（1行に1ステップ）</label>
+      <textarea id="f-stp" placeholder="フライパンにオリーブオイルを熱す&#10;鶏肉を両面焼く&#10;野菜を加えて炒める" rows="5"></textarea>
+    </div>
+    <div class="fg">
+      <label>メモ・栄養ポイント</label>
+      <textarea id="f-note" placeholder="例：高タンパク・低カロリーで筋肉ケアに最適" rows="3"></textarea>
+    </div>
+    <div class="fm-actions">
+      <button class="fm-cancel" onclick="closeForm()">キャンセル</button>
+      <button class="fm-submit" onclick="saveRecipe()">💾 保存する</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ════════════════════════════════════
+// STATE
+// ════════════════════════════════════
+const P={age:null,sex:null,activity:null,goals:[]};
+let AF='all', logDate=dateKey(new Date());
+
+function dateKey(d){return d.toISOString().split('T')[0]}
+function loadLS(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
+function saveLS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
+// ════════════════════════════════════
+// PROFILE SETUP
+// ════════════════════════════════════
+function pick(k,v,el){
+  P[k]=v;
+  document.querySelectorAll(`[onclick*="pick('${k}'"]`).forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function tgl(g,el){
+  const i=P.goals.indexOf(g);
+  if(i===-1){P.goals.push(g);el.classList.add('sel')}
+  else{P.goals.splice(i,1);el.classList.remove('sel')}
+}
+function gst(n){
+  if(n===1&&(!P.age||!P.sex)){alert('年齢と性別を選んでください');return}
+  if(n===2&&!P.activity){alert('活動レベルを選んでください');return}
+  [0,1,2].forEach(i=>{
+    document.getElementById('s'+i).style.display=i===n?'':'none';
+    const d=document.getElementById('d'+i);
+    d.classList.remove('active','done');
+    if(i<n)d.classList.add('done');else if(i===n)d.classList.add('active');
+  });
+}
+function launch(){
+  if(P.goals.length===0){P.goals=['energy']}
+  document.getElementById('profile-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  initApp();
+}
+function resetApp(){
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('profile-screen').style.display='flex';
+  P.age=null;P.sex=null;P.activity=null;P.goals=[];
+  document.querySelectorAll('.ob,.gb').forEach(e=>e.classList.remove('sel'));
+  gst(0);
+}
+
+// ════════════════════════════════════
+// DGA TARGETS
+// ════════════════════════════════════
+function calcT(){
+  const {age,sex,activity}=P;
+  const t={sedentary:0,moderate:1,active:2}[activity]||0;
+  let cal=2000;
+  if(sex==='female'){const b=age==='19-30'?[1800,2000,2400]:age==='31-50'?[1800,2000,2200]:[1600,1800,2000];cal=b[t]}
+  else{const b=age==='19-30'?[2400,2600,3000]:age==='31-50'?[2200,2400,2800]:[2000,2200,2600];cal=b[t]}
+  return{
+    calories:cal,protein:Math.round(cal*.22/4),carbs:Math.round(cal*.45/4),
+    fat:Math.round(cal*.33/9),fiber:sex==='female'?(age==='51+'?22:25):(age==='51+'?28:31),
+    calcium:age==='51+'?1200:1000,iron:sex==='female'&&age!=='51+'?18:8,
+    vitD:600,sodium:2300,potassium:sex==='female'?2600:3400
+  };
+}
+
+// ════════════════════════════════════
+// BUILT-IN RECIPES
+// ════════════════════════════════════
+const BASE=[
+{id:1,emoji:'🐟',grad:'linear-gradient(135deg,#667eea,#764ba2)',cat:'夕食',catKey:'dinner',name:'地中海風サーモンのオリーブオイル蒸し',desc:'オメガ3豊富なサーモンをEVオリーブオイルでやさしく蒸した心臓病予防の定番。',time:20,diff:'易',cal:420,dga:5,tags:['fish','highprotein'],goalMatch:['heart','beauty','energy'],highlights:['オメガ3豊富','ビタミンD源','高タンパク'],nut:{protein:38,carbs:18,fat:22,fiber:4,satFat:3.5,sodium:480,calcium:95,iron:2.8,vitD:580,potassium:820,omega3:3.2,vitC:35,folate:65,zinc:3.1},dgaG:{veg:1.5,fruit:0,grain:0.5,protein:2.0,dairy:0,oils:1.5},dgaNote:'週2回の魚食を推奨するDGAに対応。EPA・DHA（3.2g）が循環器系を保護し、EVオリーブオイルの不飽和脂肪酸が飽和脂肪摂取を最小化します。',ingredients:['サーモン切り身 200g','EVオリーブオイル 大さじ2','レモン 1/2個','ニンニク 2片','ケッパー 大さじ1','ミニトマト 8個','ほうれん草 60g','全粒粉クスクス 80g','塩・こしょう 適量','フレッシュディル 適量'],steps:['クスクスを熱湯で10分蒸らし、オリーブオイル少々と塩で調味。','サーモンに塩こしょうをふり、ニンニクスライスをのせて5分置く。','フライパンにオリーブオイルを中火で熱し、皮目から3分焼く。','裏返してトマト・ケッパーを加え、蓋をして3分蒸す。','皿にクスクスを敷きサーモンをのせ、レモンを絞ってディルをちらす。']},
+{id:2,emoji:'🥣',grad:'linear-gradient(135deg,#f6d365,#fda085)',cat:'朝食',catKey:'breakfast',name:'発酵オーバーナイトオーツ × ベリーボウル',desc:'前夜から発酵させたオートミールにアントシアニン豊富なベリー類をトッピング。腸内環境と美肌を同時にケア。',time:10,diff:'易',cal:375,dga:5,tags:['breakfast','vegetarian','lowcalorie'],goalMatch:['gut','beauty','weight','energy'],highlights:['高食物繊維','腸活発酵','アントシアニン'],nut:{protein:14,carbs:57,fat:9,fiber:9,satFat:1.5,sodium:180,calcium:280,iron:4.2,vitD:120,potassium:490,omega3:0.3,vitC:28,folate:42,zinc:2.8},dgaG:{veg:0,fruit:1.5,grain:2.0,protein:0.5,dairy:1.0,oils:0.5},dgaNote:'全粒穀物・乳製品・果物をワンボウルで達成。発酵プロセスがフィチン酸を分解しミネラル吸収率を向上。',ingredients:['全粒オートミール 80g','プレーンヨーグルト 150g','無糖豆乳 50ml','ミックスベリー 100g','チアシード 大さじ1','生クルミ 20g','はちみつ 小さじ1','シナモン 少々'],steps:['前夜：オートミール・ヨーグルト・豆乳を混ぜ冷蔵庫で8〜12時間置く。','翌朝：豆乳を足して好みの固さに調整。','ベリー・クルミ・チアシードをトッピングし、はちみつとシナモンをかける。']},
+{id:3,emoji:'🥗',grad:'linear-gradient(135deg,#11998e,#38ef7d)',cat:'昼食',catKey:'lunch',name:'スーパーフード7色サラダ',desc:'DGAが推奨する「多様な色の野菜」を一皿に集結。各色のファイトケミカルが相乗的に働くアンチエイジングサラダ。',time:15,diff:'易',cal:290,dga:5,tags:['lunch','vegetarian','lowcalorie'],goalMatch:['beauty','heart','weight','gut'],highlights:['β-カロテン豊富','ビタミンC高含','抗炎症作用'],nut:{protein:8,carbs:28,fat:16,fiber:8,satFat:2.0,sodium:320,calcium:165,iron:3.5,vitD:0,potassium:780,omega3:0.8,vitC:95,folate:180,zinc:1.8},dgaG:{veg:3.0,fruit:0.5,grain:0.5,protein:0.5,dairy:0,oils:2.0},dgaNote:'1日2.5〜3カップの野菜目標を一皿でほぼ達成。EVオリーブオイルが脂溶性ファイトケミカルの吸収を最大化。',ingredients:['ベビーリーフ・ルッコラ 60g','パプリカ（赤・黄）各1/2個','ビーツ（水煮）60g','紫キャベツ 50g','きゅうり 1本','ミニトマト 6個','カボチャの種 大さじ1','ひよこ豆 60g','EVオリーブオイル 大さじ2','レモン汁 大さじ1','ディジョンマスタード 小さじ1','はちみつ 小さじ1/2','塩・こしょう 適量'],steps:['ドレッシングを作る：オリーブオイル・レモン汁・マスタード・はちみつ・塩こしょうを混ぜる。','野菜はすべて食べやすい大きさに切る。','ボウルにベビーリーフを敷き、野菜を色鮮やかに並べる。','ひよこ豆・カボチャの種を散らしドレッシングをかける。']},
+{id:4,emoji:'🍜',grad:'linear-gradient(135deg,#f093fb,#f5576c)',cat:'夕食',catKey:'dinner',name:'全粒粉パスタ × 彩り野菜のマリナーラ',desc:'リコピン豊富なトマトソースと全粒粉パスタの低GIコンビ。精製炭水化物をゼロにしたDGA準拠の夕食。',time:30,diff:'中',cal:520,dga:4,tags:['dinner','vegetarian'],goalMatch:['heart','gut','weight'],highlights:['全粒粉使用','リコピン高含','食物繊維11g'],nut:{protein:18,carbs:72,fat:14,fiber:11,satFat:2.0,sodium:580,calcium:120,iron:4.8,vitD:0,potassium:850,omega3:0.2,vitC:75,folate:125,zinc:2.5},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:0.5,dairy:0.5,oils:1.5},dgaNote:'全粒粉は精製小麦の3〜5倍の食物繊維・B群・ミネラル。トマトのリコピンは加熱で吸収率が5倍に上昇。',ingredients:['全粒粉スパゲッティ 100g','ホールトマト缶 400g','ズッキーニ 1本','なす 1本','パプリカ 1個','ニンニク 3片','玉ねぎ 1個','バジル（生）適量','EVオリーブオイル 大さじ2','塩・こしょう 適量','パルミジャーノ 大さじ2'],steps:['全粒粉パスタを表示より1分長めにゆでる。','オリーブオイルでニンニク・玉ねぎを炒め、野菜を加えて7分炒める。','ホールトマトを加え潰しながら15分煮込み塩こしょうで調味。','パスタと絡めて盛り付け、フレッシュバジルとチーズをかける。']},
+{id:5,emoji:'🍳',grad:'linear-gradient(135deg,#ffecd2,#fcb69f)',cat:'朝食',catKey:'breakfast',name:'アボカドエッグトースト（全粒パン）',desc:'良質な不飽和脂肪酸と完全タンパク質を朝から確保。アボカドのモノ不飽和脂肪酸がDGAの油脂基準に準拠。',time:12,diff:'易',cal:440,dga:4,tags:['breakfast','vegetarian','highprotein'],goalMatch:['beauty','energy','bone'],highlights:['モノ不飽和脂肪酸','葉酸豊富','完全タンパク'],nut:{protein:20,carbs:38,fat:24,fiber:9,satFat:4.5,sodium:420,calcium:145,iron:3.8,vitD:88,potassium:620,omega3:0.4,vitC:22,folate:120,zinc:2.6},dgaG:{veg:0.5,fruit:1.0,grain:1.5,protein:1.5,dairy:0,oils:2.5},dgaNote:'アボカドはDGA推奨の「健康的な油脂食品」。モノ不飽和脂肪酸がLDLコレステロールを低下。卵でビタミンD・コリンを補給。',ingredients:['全粒粉パン 2枚','アボカド 1個','卵 2個','レモン汁 小さじ1','チリフレーク 少々','チェリートマト 4個','塩・こしょう 適量','EVオリーブオイル 小さじ1'],steps:['全粒粉パンをトーストする。','アボカドをレモン汁・塩こしょうでつぶしてペーストにする。','フライパンにオリーブオイルを熱し、卵をポーチドまたは目玉焼きにする。','トーストにアボカドペーストを塗り、卵をのせてチリフレークとトマトを飾る。']},
+{id:6,emoji:'🍲',grad:'linear-gradient(135deg,#a18cd1,#fbc2eb)',cat:'夕食',catKey:'dinner',name:'レンズ豆と根菜のスパイシースープ',desc:'植物性タンパク質の王様・レンズ豆で鉄分と食物繊維を大量補給。地中海式スープの最強レシピ。',time:35,diff:'中',cal:340,dga:5,tags:['dinner','vegetarian','highprotein','lowcalorie'],goalMatch:['gut','weight','heart','energy'],highlights:['鉄分7.8mg','植物性タンパク','食物繊維16g'],nut:{protein:22,carbs:48,fat:7,fiber:16,satFat:1.0,sodium:620,calcium:78,iron:7.8,vitD:0,potassium:790,omega3:0.2,vitC:18,folate:220,zinc:3.2},dgaG:{veg:2.0,fruit:0,grain:0,protein:2.5,dairy:0,oils:1.0},dgaNote:'DGAは毎週豆類を1.5カップ以上摂取することを推奨。レンズ豆はB群・鉄・亜鉛・マグネシウムが豊富でコレステロール低下効果も証明済み。',ingredients:['赤レンズ豆 150g','人参 2本','セロリ 2本','玉ねぎ 1個','トマト缶 1/2缶','ニンニク 3片','クミン 小さじ1','コリアンダー 小さじ1','ターメリック 小さじ1/2','野菜ブロス 800ml','EVオリーブオイル 大さじ1','レモン汁 大さじ1'],steps:['レンズ豆を水洗いする。','鍋にオリーブオイルを熱し、ニンニク・玉ねぎを炒め、スパイスを加えて香りを出す。','野菜・トマト缶を加えて5分炒め、レンズ豆とブロスを加えて30分煮込む。','レモン汁・塩こしょうで調味してコリアンダーの葉を散らす。']},
+{id:7,emoji:'🐠',grad:'linear-gradient(135deg,#4facfe,#00f2fe)',cat:'夕食',catKey:'dinner',name:'サバ味噌煮 × 玄米 × 発酵野菜定食',desc:'日本の伝統食がDGAを超える栄養密度。DHA・EPAに加え発酵食品で腸内フローラを整える完全和食。',time:25,diff:'中',cal:520,dga:4,tags:['dinner','fish','highprotein'],goalMatch:['heart','gut','energy','bone'],highlights:['DHA・EPA 2.8g','発酵食品W使用','亜鉛4.5mg'],nut:{protein:35,carbs:48,fat:18,fiber:5,satFat:4.5,sodium:850,calcium:185,iron:3.2,vitD:480,potassium:720,omega3:2.8,vitC:8,folate:38,zinc:4.5},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.0},dgaNote:'週2回の海産魚摂取を推奨するDGA準拠。サバのEPA・DHA（2.8g）は心血管疾患リスクを約35%低減。',ingredients:['サバ切り身 2切れ','玄米（炊いたもの）150g','白みそ 大さじ2','酒 大さじ2','みりん 大さじ1','生姜 1かけ','水 100ml','きゅうりのぬか漬け 適量','ほうれん草おひたし 60g'],steps:['玄米を炊く。','サバに切り込みを入れ、フライパンに水・酒・みりん・みそ・生姜を合わせ煮立てサバを8分煮る。','ほうれん草をゆでて絞り、醤油少々で調味。','玄米・サバ・ほうれん草・ぬか漬けを盛り付ける。']},
+{id:8,emoji:'🥬',grad:'linear-gradient(135deg,#43e97b,#38f9d7)',cat:'昼食',catKey:'lunch',name:'蒸し鶏×キヌア×ブロッコリーパワーボウル',desc:'完全タンパク質のキヌアと鶏胸肉でアミノ酸スコア100を達成。DGAのタンパク質多様性を凝縮したボウル。',time:25,diff:'中',cal:490,dga:5,tags:['lunch','highprotein'],goalMatch:['energy','weight','bone','beauty'],highlights:['タンパク質45g','ビタミンC 110mg','亜鉛4.8mg'],nut:{protein:45,carbs:42,fat:12,fiber:8,satFat:2.0,sodium:520,calcium:135,iron:4.5,vitD:42,potassium:880,omega3:0.5,vitC:110,folate:95,zinc:4.8},dgaG:{veg:2.0,fruit:0,grain:1.5,protein:3.0,dairy:0,oils:1.0},dgaNote:'鶏肉＋キヌアで全9種必須アミノ酸を網羅。ブロッコリーのビタミンCが非ヘム鉄吸収を最大6倍向上。',ingredients:['鶏胸肉 200g','キヌア（乾燥）80g','ブロッコリー 200g','エダマメ 50g','チェリートマト 6個','タヒニ 大さじ1','レモン汁 大さじ1','EVオリーブオイル 大さじ1'],steps:['キヌアを1:2の水で15分炊く。','鍋で鶏胸肉を酒・生姜入りの湯で12分ゆで余熱10分。','ブロッコリーを塩ゆでにする。','タヒニ・レモン・オリーブオイルでドレッシングを作る。','ボウルにキヌア・蒸し鶏・ブロッコリー・エダマメ・トマトを並べドレッシングをかける。']},
+{id:9,emoji:'🍵',grad:'linear-gradient(135deg,#d4fc79,#96e6a1)',cat:'間食',catKey:'snack',name:'抹茶＆アーモンドエナジーボール（添加糖ゼロ）',desc:'添加糖ゼロで作る自然派エナジーバー。DGAが問題視する添加糖過剰を回避しながら甘味欲を満たす。',time:15,diff:'易',cal:180,dga:4,tags:['snack','vegetarian','lowcalorie'],goalMatch:['weight','beauty','gut'],highlights:['添加糖ゼロ','カテキン源','マグネシウム'],nut:{protein:5,carbs:22,fat:9,fiber:3,satFat:1.0,sodium:20,calcium:65,iron:1.8,vitD:0,potassium:220,omega3:0.3,vitC:2,folate:15,zinc:0.8},dgaG:{veg:0,fruit:0.5,grain:0.5,protein:0.5,dairy:0,oils:1.0},dgaNote:'DGA 2025-2030では1食あたりの添加糖を10g以下に制限することを推奨。人工甘味料・石油系着色料・人工保存料も回避すべき対象。このレシピはデーツの天然糖のみを使用した超加工食品ゼロの間食。',ingredients:['有機抹茶パウダー 大さじ1','アーモンド 40g','メジュールデーツ 8個','全粒オートミール 50g','バニラエッセンス 少々','コーティング用カカオパウダー 適量'],steps:['デーツから種を取り除く。','フードプロセッサーに全材料を入れまとまるまで攪拌する。','手を軽く濡らしボール状に成形する（12〜14個）。','カカオパウダーをまぶして冷蔵庫で30分冷やして完成。']},
+{id:10,emoji:'🫐',grad:'linear-gradient(135deg,#a8edea,#fed6e3)',cat:'間食',catKey:'snack',name:'アンチエイジングスムージーボウル',desc:'ポリフェノール・アントシアニン・ビタミンCを超高濃度で摂取。DGA果物摂取目標を間食で達成できる美容スムージー。',time:8,diff:'易',cal:260,dga:5,tags:['snack','vegetarian','lowcalorie'],goalMatch:['beauty','gut','weight'],highlights:['ポリフェノール豊富','ビタミンC 85mg','腸活プロバイオ'],nut:{protein:10,carbs:42,fat:5,fiber:7,satFat:0.5,sodium:80,calcium:210,iron:2.1,vitD:80,potassium:540,omega3:0.2,vitC:85,folate:55,zinc:1.2},dgaG:{veg:0.5,fruit:2.0,grain:0,protein:0.5,dairy:1.0,oils:0},dgaNote:'DGAの果物摂取推奨量（1日1.5〜2カップ）をこの1品で達成。ベリーのアントシアニンは皮膚コラーゲン生成を促進。',ingredients:['冷凍ミックスベリー 150g','冷凍バナナ 1本','ギリシャヨーグルト 120g','無糖豆乳 50ml','グラノーラ 大さじ2','ゴジベリー 大さじ1','ヘンプシード 大さじ1','はちみつ 小さじ1'],steps:['冷凍ベリー・バナナ・ヨーグルト・豆乳をブレンダーで攪拌する（厚めに仕上げる）。','ボウルに移し、グラノーラ・ゴジベリー・ヘンプシードを並べる。','はちみつをかけて完成。']},
+{id:11,emoji:'🥩',grad:'linear-gradient(135deg,#f77062,#fe5196)',cat:'夕食',catKey:'dinner',name:'赤身肉×7色野菜のワンパンロースト',desc:'ヘム鉄を効率的に摂取できる赤身肉を野菜と一緒にオーブンロースト。DGA基準内の赤肉摂取で鉄欠乏を予防。',time:40,diff:'中',cal:560,dga:3,tags:['dinner','highprotein'],goalMatch:['energy','bone','weight'],highlights:['ヘム鉄8.5mg','亜鉛8.2mg','高タンパク48g'],nut:{protein:48,carbs:28,fat:22,fiber:7,satFat:6.5,sodium:620,calcium:88,iron:8.5,vitD:12,potassium:950,omega3:0.4,vitC:88,folate:72,zinc:8.2},dgaG:{veg:3.0,fruit:0,grain:0,protein:3.5,dairy:0,oils:1.5},dgaNote:'赤身部位は飽和脂肪酸が低く、ヘム鉄・亜鉛の優れた供給源。ビタミンCが豊富な野菜との組み合わせで鉄吸収も増強。',ingredients:['牛赤身ステーキ 200g','さつまいも 150g','ブロッコリー 100g','パプリカ（赤・オレンジ）各1個','紫玉ねぎ 1/2個','ローズマリー 2枝','EVオリーブオイル 大さじ2','塩・こしょう 適量'],steps:['オーブンを200℃に予熱。','野菜をひと口大に切りオリーブオイル・塩こしょうで和え、オーブンシートに並べ20分ロースト。','牛肉に塩こしょうをして強火で各面2分焼きレストさせる。','野菜と肉を合わせバルサミコ酢をかける。']},
+{id:12,emoji:'🌯',grad:'linear-gradient(135deg,#ffeaa7,#b2dfdb)',cat:'朝食',catKey:'breakfast',name:'彩り野菜のエッグ＆豆腐タコス',desc:'朝から植物性・動物性タンパク質をW補給。DGAのタンパク質多様性を朝食で実現する革新的な一皿。',time:18,diff:'易',cal:460,dga:5,tags:['breakfast','highprotein'],goalMatch:['beauty','energy','weight','bone'],highlights:['葉酸148μg','大豆イソフラボン','完全食朝食'],nut:{protein:28,carbs:44,fat:18,fiber:8,satFat:3.5,sodium:480,calcium:255,iron:5.2,vitD:55,potassium:580,omega3:0.4,vitC:68,folate:148,zinc:3.8},dgaG:{veg:1.5,fruit:0,grain:2.0,protein:2.5,dairy:0.5,oils:1.5},dgaNote:'DGAは大豆製品を乳製品代替として推奨。大豆イソフラボンは骨密度維持・肌弾力維持と関連。卵のコリンは脳機能維持に不可欠。',ingredients:['全粒粉トルティーヤ 2枚','卵 2個','木綿豆腐 80g','ほうれん草 60g','パプリカ（赤）1/2個','アボカド 1/2個','サルサソース 大さじ2','ターメリック・クミン 少々','EVオリーブオイル 小さじ1'],steps:['豆腐を水切りしてフォークで崩し、ターメリック・クミン・塩で調味する。','フライパンにオリーブオイルを熱し豆腐を炒め、溶き卵を加えてスクランブルにする。','パプリカとほうれん草を加えてさっと炒める。','トルティーヤを温め、スクランブルを詰めてアボカド・サルサをのせる。']},
+{id:13,emoji:'🐚',grad:'linear-gradient(135deg,#1a3a5c,#2d7dd2)',cat:'夕食',catKey:'dinner',name:'白身魚のアクアパッツァ風オリーブオイル煮',desc:'高品質EVオリーブオイルを使った地中海式の真髄。ポリフェノール豊富なオイルが魚の栄養を最大化。',time:25,diff:'中',cal:390,dga:5,tags:['dinner','fish','lowcalorie'],goalMatch:['heart','beauty','weight','energy'],highlights:['セレン豊富','低カロリー高タンパク','オレオカンタール'],nut:{protein:42,carbs:15,fat:18,fiber:4,satFat:2.5,sodium:560,calcium:145,iron:2.5,vitD:320,potassium:780,omega3:1.8,vitC:55,folate:48,zinc:2.8},dgaG:{veg:2.0,fruit:0,grain:0,protein:3.0,dairy:0,oils:2.5},dgaNote:'EVオリーブオイルのオレオカンタールはイブプロフェンと同様の抗炎症作用を持ちます。DGA推奨の不飽和脂肪酸を最大化した理想的なオイル使用。',ingredients:['白身魚（タラ）2切れ','ミニトマト 12個','あさり 150g','ブラックオリーブ 10粒','ケッパー 大さじ1','にんにく 3片','白ワイン 60ml','高品質EVオリーブオイル 大さじ3','イタリアンパセリ 適量'],steps:['あさりを塩水で砂抜き。魚に塩こしょうをして10分置く。','深めのフライパンにオリーブオイルを熱し、にんにくを炒める。','魚を皮目から入れて両面に焼き色をつける。','ミニトマト・あさり・オリーブ・ケッパー・白ワインを加え蓋をして8分蒸し煮。','パセリを散らし仕上げにオリーブオイルをひと回しかける。']},
+{id:14,emoji:'🫘',grad:'linear-gradient(135deg,#fddb92,#d1fdff)',cat:'昼食',catKey:'lunch',name:'ひよこ豆ファラフェル×全粒ピタ×タブレサラダ',desc:'中東の植物性食の英知を凝縮。DGAが推奨する豆類摂取をクリエイティブに達成した一皿。',time:30,diff:'中',cal:510,dga:5,tags:['lunch','vegetarian','highprotein'],goalMatch:['gut','heart','weight','energy'],highlights:['葉酸195μg','植物性鉄6.2mg','食物繊維13g'],nut:{protein:20,carbs:68,fat:16,fiber:13,satFat:2.0,sodium:480,calcium:155,iron:6.2,vitD:0,potassium:720,omega3:0.4,vitC:65,folate:195,zinc:3.4},dgaG:{veg:2.0,fruit:0,grain:2.5,protein:2.0,dairy:0,oils:1.5},dgaNote:'ひよこ豆のレジスタントスターチが大腸の善玉菌の餌となり、免疫細胞の70%が集中する腸内環境を最適化します。',ingredients:['ひよこ豆（水煮）200g','全粒粉ピタパン 2枚','パセリ 30g','コリアンダー 15g','玉ねぎ 1/4個','にんにく 2片','クミン 小さじ1','タヒニ 大さじ2','クスクス 50g'],steps:['フードプロセッサーにひよこ豆・ハーブ・玉ねぎ・にんにく・クミンを入れ粗くつぶす。','ボール状に成形し180℃のオリーブオイルで5〜7分揚げる（またはオーブン200℃/20分）。','クスクスをハーブ・トマト・レモン汁・オリーブオイルで和えタブレを作る。','ピタパンにファラフェル・タブレを詰めタヒニソースをかける。']},
+{id:15,emoji:'🥙',grad:'linear-gradient(135deg,#fa709a,#fee140)',cat:'昼食',catKey:'lunch',name:'腸活！海藻×豆腐×根菜のみそ汁定食',desc:'日本の伝統的な腸活食材をDGAの視点で最適化。発酵食品×プレバイオティクスの相乗効果で腸内フローラを革新。',time:20,diff:'易',cal:380,dga:4,tags:['lunch','vegetarian','lowcalorie'],goalMatch:['gut','bone','beauty','weight'],highlights:['発酵プロバイオ','カルシウム320mg','海藻ヨウ素'],nut:{protein:18,carbs:52,fat:8,fiber:10,satFat:1.5,sodium:780,calcium:320,iron:5.2,vitD:35,potassium:650,omega3:0.3,vitC:32,folate:88,zinc:2.1},dgaG:{veg:2.5,fruit:0,grain:2.0,protein:1.5,dairy:0.5,oils:0.5},dgaNote:'みそ（発酵）＋納豆（発酵・ビタミンK2）＋海藻（食物繊維・ヨウ素）の組み合わせはDGAの「発酵食品多様性」原則に合致。',ingredients:['絹ごし豆腐 100g','わかめ（乾燥）5g','ごぼう 50g','大根 60g','人参 40g','白みそ 大さじ1.5','出汁（煮干し）600ml','玄米ご飯 100g','納豆 1パック','海苔 1枚'],steps:['ごぼうを笹がきにして水にさらし、大根・人参は短冊切りにする。','出汁を温め根菜を5分煮る。','豆腐・わかめを加えみそを溶き入れる。','玄米ご飯・納豆・海苔と組み合わせて定食に。']},
+
+// ── 追加レシピ（DGA未カバー領域補完）──
+{id:16,emoji:'🫐',grad:'linear-gradient(135deg,#89f7fe,#66a6ff)',cat:'朝食',catKey:'breakfast',name:'チアシードプディング × マンゴーソース',desc:'DGAが強調する「植物性オメガ3」の最高効率補給源。前夜5分の仕込みで翌朝ゼロ調理・最高栄養密度の朝食。',time:8,diff:'易',cal:340,dga:5,tags:['breakfast','vegetarian','lowcalorie'],goalMatch:['gut','beauty','heart','weight'],highlights:['植物性オメガ3豊富','食物繊維12g','カルシウム高含'],nut:{protein:12,carbs:44,fat:14,fiber:12,satFat:1.2,sodium:95,calcium:320,iron:3.8,vitD:100,potassium:580,omega3:2.4,vitC:42,folate:68,zinc:2.1},dgaG:{veg:0,fruit:2.0,grain:0,protein:0.5,dairy:1.0,oils:0.5},dgaNote:'チアシードのα-リノレン酸（ALA）はDGAが推奨する植物性オメガ3の代表格。腸内でゲル状になり食物繊維として機能し、血糖値の急上昇を抑制。マンゴーのβ-カロテンとビタミンCが美肌ケアをサポートします。',ingredients:['チアシード 40g','無糖豆乳 250ml','ギリシャヨーグルト 80g','はちみつ 小さじ1','バニラエッセンス 少々','マンゴー（冷凍）100g','レモン汁 小さじ1','ミントの葉 適量'],steps:['前夜：チアシードと豆乳・ヨーグルト・はちみつ・バニラを混ぜ、よく撹拌して冷蔵庫で一晩置く。','翌朝：マンゴーをフォークでつぶしてレモン汁と混ぜてソースを作る。','チアシードプディングの上にマンゴーソースをかけ、ミントを飾る。']},
+
+{id:17,emoji:'🐡',grad:'linear-gradient(135deg,#f8ceec,#a18cd1)',cat:'夕食',catKey:'dinner',name:'マグロのポキボウル × 玄米 × アボカド',desc:'ハワイ発の栄養科学的に完璧な一皿。DGA推奨の魚・全粒穀物・健康的な油脂を組み合わせた現代的なボウル料理。',time:20,diff:'易',cal:510,dga:5,tags:['dinner','fish','highprotein'],goalMatch:['heart','beauty','energy','weight'],highlights:['DHA・EPA 1.9g','完全タンパク質','抗炎症食材'],nut:{protein:40,carbs:45,fat:18,fiber:7,satFat:2.8,sodium:620,calcium:88,iron:3.2,vitD:180,potassium:920,omega3:1.9,vitC:28,folate:95,zinc:4.2},dgaG:{veg:1.5,fruit:0.5,grain:2.0,protein:3.0,dairy:0,oils:2.0},dgaNote:'DGAは週2回以上の魚介類摂取を推奨。マグロのDHA・EPAが心血管系を保護し、アボカドのモノ不飽和脂肪酸が脂溶性ビタミン（A・D・E・K）の吸収を最大化します。枝豆のイソフラボンが加わることでファイトエストロゲン効果も。',ingredients:['刺身用マグロ 150g','玄米（炊いたもの）150g','アボカド 1個','枝豆 40g','きゅうり 1/2本','海藻サラダ 30g','醤油 大さじ1','ごま油 小さじ1','すりごま 大さじ1','わさび 少々','レモン汁 小さじ1'],steps:['マグロを1.5cm角に切り、醤油・ごま油・わさびで軽く和えて5分漬ける。','アボカドをスライスし、きゅうりを薄切りにする。','丼に玄米を盛り、マグロ・アボカド・枝豆・きゅうり・海藻サラダを並べる。','すりごまとレモン汁をかけて完成。']},
+
+{id:18,emoji:'🫛',grad:'linear-gradient(135deg,#96fbc4,#f9f586)',cat:'夕食',catKey:'dinner',name:'大豆ミートのボロネーゼ × 全粒粉ペンネ',desc:'植物性食の最前線。DGAが推奨する「肉の植物性食品への置き換え」を実践した低飽和脂肪・高食物繊維の革新イタリアン。',time:30,diff:'中',cal:490,dga:5,tags:['dinner','vegetarian','highprotein'],goalMatch:['heart','gut','weight','energy'],highlights:['飽和脂肪ほぼゼロ','植物性タンパク28g','食物繊維14g'],nut:{protein:28,carbs:65,fat:12,fiber:14,satFat:1.2,sodium:540,calcium:135,iron:6.8,vitD:0,potassium:880,omega3:0.4,vitC:48,folate:165,zinc:3.8},dgaG:{veg:2.0,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.5},dgaNote:'DGA 2025-2030は動物性タンパク質の一部を植物性食品へ置き換えることで、飽和脂肪酸摂取量を自然に削減できると強調しています。大豆ミートは完全タンパク質かつヘム鉄非依存の鉄源で、腸内善玉菌の餌となる食物繊維も豊富です。',ingredients:['大豆ミート（乾燥）60g','全粒粉ペンネ 100g','トマト缶 1/2缶','玉ねぎ 1個','人参 1本','セロリ 1本','ニンニク 3片','赤ワイン 50ml','月桂樹の葉 1枚','EVオリーブオイル 大さじ1.5','塩・こしょう 適量','バジル 適量'],steps:['大豆ミートを熱湯で戻し、水気を絞る。','オリーブオイルでニンニク・玉ねぎ・人参・セロリを炒め、大豆ミートを加えて炒める。','赤ワインを加えてアルコールを飛ばし、トマト缶・月桂樹の葉を加えて20分煮込む。','全粒粉ペンネをゆでてソースと合わせ、バジルをのせる。']},
+
+{id:19,emoji:'🥚',grad:'linear-gradient(135deg,#fddb92,#fcb045)',cat:'朝食',catKey:'breakfast',name:'ベジタブルフリッタータ（イタリア風卵焼き）',desc:'DGAが推奨するチョリン・ビタミンDの最良供給源である卵を、彩り野菜と組み合わせたオーブン焼き朝食。',time:25,diff:'中',cal:360,dga:4,tags:['breakfast','vegetarian','highprotein','lowcalorie'],goalMatch:['energy','bone','beauty','weight'],highlights:['コリン豊富','ビタミンD源','完全タンパク'],nut:{protein:24,carbs:18,fat:20,fiber:5,satFat:5.5,sodium:420,calcium:195,iron:3.5,vitD:165,potassium:620,omega3:0.3,vitC:78,folate:112,zinc:2.9},dgaG:{veg:2.0,fruit:0,grain:0,protein:2.0,dairy:0.5,oils:1.5},dgaNote:'卵はDGAが「高栄養密度タンパク食品」として推奨する食材の筆頭。コリン（脳機能・神経発達）・ルテイン（目の健康）・ゼアキサンチンを豊富に含み、特に朝の脳機能活性化に最適。野菜のビタミンCが卵の鉄吸収を向上させます。',ingredients:['卵 4個','ほうれん草 80g','ミニトマト 8個','パプリカ（赤）1/2個','玉ねぎ 1/4個','フェタチーズ 30g','EVオリーブオイル 大さじ1','塩・こしょう 適量','バジル 適量'],steps:['オーブンを180℃に予熱。','フライパン（オーブン対応）にオリーブオイルを熱し、玉ねぎ・パプリカを炒める。','ほうれん草を加えてしんなりさせ、ミニトマトを並べる。','溶き卵（塩こしょう入り）を流し込み、フェタチーズをちらして180℃で12分焼く。','バジルを飾ってカットし、取り分ける。']},
+
+{id:20,emoji:'🥜',grad:'linear-gradient(135deg,#e0c3fc,#8ec5fc)',cat:'間食',catKey:'snack',name:'ナッツ＆ドライフルーツのDGAミックス',desc:'DGAが「毎日少量摂ることを推奨」するナッツ類を科学的に配合。心臓病リスク低下・抗炎症・脳機能保護の三冠を達成。',time:5,diff:'易',cal:220,dga:5,tags:['snack','vegetarian','lowcalorie'],goalMatch:['heart','beauty','energy','bone'],highlights:['不飽和脂肪酸豊富','マグネシウム源','抗酸化ポリフェノール'],nut:{protein:7,carbs:18,fat:14,fiber:3,satFat:1.5,sodium:10,calcium:72,iron:1.5,vitD:0,potassium:310,omega3:1.8,vitC:1,folate:22,zinc:1.4},dgaG:{veg:0,fruit:0.5,grain:0,protein:1.0,dairy:0,oils:1.5},dgaNote:'大規模疫学研究（PREDIMED試験）でナッツ類の定期摂取が心血管疾患リスクを30%低減することが証明されました。DGAはナッツを「タンパク質食品グループ」の重要構成員として位置づけています。クルミのオメガ3（ALA）含有量は全ナッツ中最高です。',ingredients:['生クルミ 15g','アーモンド 10g','カシューナッツ 10g','ピスタチオ 10g','ドライブルーベリー 15g','ドライアプリコット（砂糖不使用）10g','ダークチョコレート（カカオ70%以上）10g'],steps:['すべての材料を小皿または密閉容器に入れて混ぜる。','まとめて作り置きする場合は100gを5等分して個別パックにする。（冷暗所で2週間保存可能）']},
+
+{id:21,emoji:'🫑',grad:'linear-gradient(135deg,#0ba360,#3cba92)',cat:'夕食',catKey:'dinner',name:'グリル野菜と豆腐のバルサミコプレート',desc:'DGAのHealthy Vegetarian Patternを体現。植物性完全食で鉄・カルシウム・タンパク質を動物性なしで完全充足。',time:25,diff:'易',cal:320,dga:5,tags:['dinner','vegetarian','lowcalorie'],goalMatch:['heart','weight','beauty','gut'],highlights:['植物性完全食','カルシウム高含','抗炎症野菜'],nut:{protein:16,carbs:32,fat:14,fiber:9,satFat:2.0,sodium:480,calcium:285,iron:5.8,vitD:0,potassium:760,omega3:0.5,vitC:85,folate:155,zinc:2.4},dgaG:{veg:3.0,fruit:0,grain:0.5,protein:2.0,dairy:0,oils:2.0},dgaNote:'DGAのHealthy Vegetarian Patternはあらゆる必須栄養素を植物性食品のみで充足できることを示しています。木綿豆腐の大豆タンパクはアミノ酸スコア100で、鉄・カルシウム・マグネシウムも豊富。バルサミコ酢のポリフェノールが血糖管理を助けます。',ingredients:['木綿豆腐 200g','ズッキーニ 1本','なす 1本','パプリカ（赤・黄）各1/2個','芽キャベツ 8個','EVオリーブオイル 大さじ2','バルサミコ酢 大さじ1.5','はちみつ 小さじ1','ニンニク（すりおろし）小さじ1/2','ローズマリー 1枝','塩・こしょう 適量'],steps:['豆腐を水切りして1.5cm厚にスライスし、キッチンペーパーで水気をしっかり拭く。','野菜を食べやすい大きさに切る。','バルサミコ酢・はちみつ・ニンニク・オリーブオイルを混ぜてマリネ液を作り、豆腐と野菜を10分漬ける。','グリルパンまたはオーブン（200℃/20分）で豆腐と野菜に焼き色をつける。','プレートに盛り付け、残ったマリネ液をかけてローズマリーを飾る。']},
+
+{id:22,emoji:'🍤',grad:'linear-gradient(135deg,#f7971e,#ffd200)',cat:'昼食',catKey:'lunch',name:'えびとアボカドのキヌアサラダ',desc:'えびのセレン・アスタキサンチンとキヌアの完全タンパク質を組み合わせた美肌・抗酸化の最強ランチ。DGA魚介類目標を達成。',time:20,diff:'易',cal:430,dga:5,tags:['lunch','fish','highprotein','lowcalorie'],goalMatch:['beauty','weight','energy','heart'],highlights:['アスタキサンチン','セレン豊富','完全タンパク'],nut:{protein:32,carbs:38,fat:16,fiber:7,satFat:2.2,sodium:520,calcium:105,iron:3.8,vitD:42,potassium:780,omega3:0.8,vitC:48,folate:115,zinc:3.5},dgaG:{veg:2.0,fruit:0.5,grain:1.5,protein:2.5,dairy:0,oils:1.5},dgaNote:'えびはDGAが推奨する魚介類の中でも低カロリー・高タンパクの代表格。アスタキサンチンはビタミンEの6000倍の抗酸化力を持ち、紫外線ダメージからコラーゲンを保護します。セレンは甲状腺機能と免疫系の維持に不可欠なミネラルです。',ingredients:['むきえび 150g','キヌア（乾燥）80g','アボカド 1個','ベビーほうれん草 50g','ミニトマト 8個','キュウリ 1/2本','レモン汁 大さじ1.5','EVオリーブオイル 大さじ1.5','ディジョンマスタード 小さじ1','塩・こしょう 適量','パクチー 適量'],steps:['キヌアを1:2の水で15分炊いて冷ます。','えびを塩ゆで（2分）して冷水で締める。','ドレッシング：レモン汁・オリーブオイル・マスタード・塩こしょうを混ぜる。','ボウルにキヌア・ベビーほうれん草・えび・アボカド・トマト・キュウリを盛り付け、ドレッシングをかける。']},
+
+{id:23,emoji:'🫚',grad:'linear-gradient(135deg,#b8c6db,#f5f7fa)',cat:'昼食',catKey:'lunch',name:'地中海式グリルチキン × タブレサラダ定食',desc:'DGAのHealthy Mediterranean-Style Patternの完全実践版。鶏肉・全粒小麦・野菜・ハーブの組み合わせで地中海長寿食を体験。',time:30,diff:'中',cal:520,dga:5,tags:['lunch','highprotein'],goalMatch:['heart','weight','energy','beauty'],highlights:['地中海食パターン','ポリフェノール豊富','低飽和脂肪'],nut:{protein:42,carbs:48,fat:16,fiber:8,satFat:2.8,sodium:560,calcium:95,iron:4.2,vitD:32,potassium:850,omega3:0.6,vitC:62,folate:88,zinc:4.5},dgaG:{veg:2.5,fruit:0,grain:2.0,protein:3.0,dairy:0,oils:2.0},dgaNote:'DGAはHealthy Mediterranean-Style Patternを心血管疾患・2型糖尿病リスク低減の有力な食事パターンとして推奨。ハーブ類（パセリ・ミント・コリアンダー）は微量ながらもビタミンK・葉酸の優れた供給源です。',ingredients:['鶏もも肉（皮なし）200g','ブルグア小麦（全粒）80g','パセリ 40g','ミント 20g','ミニトマト 8個','キュウリ 1本','レモン汁 大さじ2','EVオリーブオイル 大さじ2','ニンニク 2片','クミン 小さじ1/2','パプリカパウダー 小さじ1','塩・こしょう 適量'],steps:['鶏肉をオリーブオイル・ニンニク・クミン・パプリカパウダー・塩こしょうでマリネし30分置く。','ブルグアを熱湯で15分蒸らして冷ます。','パセリ・ミント・トマト・キュウリを細かく刻み、ブルグアと混ぜてレモン汁・オリーブオイルで和える（タブレ）。','マリネした鶏肉をグリルパンで中火7〜8分焼く。','タブレと鶏肉を盛り合わせて完成。']},
+
+{id:24,emoji:'🌽',grad:'linear-gradient(135deg,#f093fb,#f5576c)',cat:'夕食',catKey:'dinner',name:'黒豆×コーン×野菜のテックスメックスボウル',desc:'DGAが推奨する豆類・野菜・全粒穀物を一皿に。ラテンアメリカの伝統食材をベースにした高食物繊維・高抗酸化の夕食。',time:25,diff:'易',cal:450,dga:5,tags:['dinner','vegetarian','highprotein'],goalMatch:['gut','weight','heart','energy'],highlights:['食物繊維15g','植物性鉄豊富','抗酸化アントシアニン'],nut:{protein:22,carbs:64,fat:11,fiber:15,satFat:1.8,sodium:580,calcium:145,iron:6.5,vitD:0,potassium:890,omega3:0.3,vitC:55,folate:210,zinc:3.2},dgaG:{veg:2.5,fruit:0,grain:2.0,protein:2.5,dairy:0,oils:1.0},dgaNote:'黒豆のアントシアニン（黒い色素）は強力な抗酸化・抗炎症作用を持ちます。DGAが週1.5カップ以上の豆類摂取を推奨する理由は、食物繊維・植物性タンパク・葉酸・鉄・カリウムを同時に補給できる「栄養パッケージ食品」だからです。',ingredients:['黒豆（水煮缶）200g','スイートコーン 80g','玄米（炊いたもの）130g','アボカド 1個','ミニトマト 8個','赤玉ねぎ 1/4個','コリアンダー 適量','ライム汁 大さじ1.5','EVオリーブオイル 大さじ1','クミン 小さじ1/2','チリパウダー 小さじ1/4','塩・こしょう 適量'],steps:['黒豆とコーンをクミン・チリパウダー・塩で炒めて香りを出す。','アボカドをスライスし、赤玉ねぎを薄切り、トマトを半分に切る。','ライム汁・オリーブオイル・塩こしょうでドレッシングを作る。','丼に玄米を盛り、黒豆・コーン・アボカド・トマト・玉ねぎを彩りよく並べる。','ドレッシングをかけてコリアンダーを散らす。']},
+
+{id:25,emoji:'🥛',grad:'linear-gradient(135deg,#cfd9df,#e2ebf0)',cat:'間食',catKey:'snack',name:'ギリシャヨーグルト × はちみつ × くるみのカルシウムパフェ',desc:'DGAが成人に1日3カップを推奨する乳製品目標を間食で効率的に達成。骨密度・腸内環境・美肌を同時にサポート。',time:5,diff:'易',cal:240,dga:5,tags:['snack','vegetarian','lowcalorie'],goalMatch:['bone','beauty','gut','weight'],highlights:['カルシウム350mg','プロバイオティクス','オメガ3入り'],nut:{protein:16,carbs:24,fat:10,fiber:2,satFat:2.5,sodium:65,calcium:350,iron:1.2,vitD:88,potassium:380,omega3:1.2,vitC:5,folate:18,zinc:1.8},dgaG:{veg:0,fruit:0.5,grain:0,protein:0.5,dairy:1.5,oils:0.5},dgaNote:'DGAは1日3カップ相当の乳製品または強化大豆製品の摂取を推奨しています。ギリシャヨーグルトは通常ヨーグルトの約2倍のタンパク質を含み、生きた乳酸菌（L.bulgaricus・S.thermophilus）が腸内フローラを改善。カルシウムとビタミンDの同時摂取が骨密度維持に効果的です。',ingredients:['プレーンギリシャヨーグルト 200g','生クルミ 20g','生はちみつ 小さじ1.5','ドライフィグ 2個','シナモン 少々','カカオニブ 小さじ1（あれば）'],steps:['ギリシャヨーグルトを器に盛る。','クルミを粗く刻み、ドライフィグを薄切りにする。','ヨーグルトの上にクルミ・フィグ・カカオニブをトッピングする。','はちみつをかけ、シナモンをふって完成。']},
+
+// ── 和食追加レシピ ──
+{id:26,emoji:'🐟',grad:'linear-gradient(135deg,#f7797d,#fbd3e9)',cat:'夕食',catKey:'dinner',name:'秋刀魚の塩焼き × 大根おろし × 玄米定食',desc:'DHA・EPA含有量が全魚介類トップクラスの秋刀魚。大根おろしのジアスターゼが消化を助け、脂質代謝を最適化する日本の食の知恵。',time:20,diff:'易',cal:510,dga:4,tags:['dinner','fish','highprotein'],goalMatch:['heart','energy','beauty','bone'],highlights:['DHA・EPA 3.8g','ビタミンB12豊富','ビタミンD 520IU'],nut:{protein:32,carbs:48,fat:20,fiber:4,satFat:5.0,sodium:680,calcium:125,iron:2.5,vitD:520,potassium:680,omega3:3.8,vitC:12,folate:28,zinc:3.8},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.0},dgaNote:'秋刀魚はDGAが週2回推奨する青魚の中でも特にDHA・EPA含有量が多い魚です。大根のジアスターゼ（消化酵素）が脂質の消化吸収を助け、ビタミンCが鉄の非ヘム鉄吸収を向上。玄米の食物繊維が血糖値の安定に貢献します。',ingredients:['秋刀魚 2尾','大根 150g','すだち（またはレモン）1個','玄米ご飯 150g','ほうれん草おひたし 60g','醤油 小さじ1','塩 少々'],steps:['秋刀魚に塩をふって10分置き、水気を拭く。','グリルまたは魚焼き器で中火で片面7〜8分ずつ焼く。','大根をすりおろして軽く水気を切る。','玄米ご飯・ほうれん草おひたしとともに盛り付け、秋刀魚に大根おろしをのせすだちを絞る。']},
+
+{id:27,emoji:'🍖',grad:'linear-gradient(135deg,#f2994a,#f2c94c)',cat:'夕食',catKey:'dinner',name:'鶏の照り焼き × 根菜の煮物 × 玄米定食',desc:'和食の定番・照り焼きを玄米と根菜の煮物と組み合わせた栄養バランス満点の一汁三菜。DGAの多様な野菜摂取基準を根菜で達成。',time:35,diff:'中',cal:540,dga:4,tags:['dinner','highprotein'],goalMatch:['energy','bone','weight','heart'],highlights:['高タンパク38g','根菜で食物繊維','カリウム豊富'],nut:{protein:38,carbs:54,fat:14,fiber:8,satFat:3.5,sodium:780,calcium:95,iron:3.8,vitD:28,potassium:920,omega3:0.4,vitC:22,folate:58,zinc:4.2},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.0},dgaNote:'DGAの多様な野菜グループに対応する根菜類（れんこん・ごぼう・人参・こんにゃく）はそれぞれ異なる食物繊維（イヌリン・セルロース・ペクチン）を供給します。鶏もも肉（皮なし）は飽和脂肪酸が少なく、ナイアシン・ビタミンB6・亜鉛が豊富です。',ingredients:['鶏もも肉（皮なし）200g','醤油 大さじ1.5','みりん 大さじ1.5','酒 大さじ1','はちみつ 小さじ1','れんこん 80g','ごぼう 60g','人参 60g','こんにゃく 50g','だし 200ml','醤油 大さじ1','みりん 大さじ1','砂糖 小さじ1','玄米ご飯 150g'],steps:['根菜類を乱切りにして下ゆでする。こんにゃくはちぎって塩もみ後炒りつける。','鍋にだし・醤油・みりん・砂糖を合わせ根菜・こんにゃくを入れて中火で20分煮る。','鶏もも肉に調味料（醤油・みりん・酒・はちみつ）をもみ込み10分置く。','フライパンで鶏肉を皮目から焼き、途中でたれを加えて照りを出す。','玄米ご飯・根菜煮物・照り焼きを盛り合わせる。']},
+
+{id:28,emoji:'🐷',grad:'linear-gradient(135deg,#e0c3fc,#9face6)',cat:'夕食',catKey:'dinner',name:'豚汁 × 玄米 × ひじき煮の定食',desc:'豚肉のビタミンB1×根菜×発酵みそ×ひじきの鉄分が揃う、精密栄養学的に理想の一汁三菜。DGA基準の多様な野菜を満たす和食定食。',time:30,diff:'中',cal:490,dga:5,tags:['dinner','gut'],goalMatch:['energy','gut','bone','heart'],highlights:['ビタミンB1豊富','鉄分高含','腸活みそ'],nut:{protein:26,carbs:58,fat:14,fiber:11,satFat:4.0,sodium:820,calcium:185,iron:6.8,vitD:18,potassium:850,omega3:0.3,vitC:18,folate:72,zinc:3.5},dgaG:{veg:3.0,fruit:0,grain:2.5,protein:2.0,dairy:0,oils:0.5},dgaNote:'豚肉のビタミンB1は糖質代謝を助けエネルギー産生に不可欠。ひじきはカルシウム・鉄・マグネシウムが豊富な海藻で、DGAが推奨する植物性カルシウム源の代表格です。みそのプロバイオティクスと根菜のプレバイオティクスの組み合わせが腸内環境を最適化します。',ingredients:['豚バラ薄切り 80g','大根 100g','人参 80g','ごぼう 60g','こんにゃく 50g','里芋 80g','長ねぎ 1/2本','みそ 大さじ2','だし 600ml','ごま油 小さじ1','乾燥ひじき 10g','油揚げ 1/2枚','にんじん（ひじき用）30g','醤油 小さじ2','みりん 小さじ2','砂糖 小さじ1','玄米ご飯 150g'],steps:['乾燥ひじきを水で戻す。油揚げ・にんじんと一緒に醤油・みりん・砂糖で煮てひじき煮を作る。','豚バラを一口大に切り、ごま油で炒めて根菜類を加えて炒める。','だしを加えて野菜が柔らかくなるまで15分煮る。','みそを溶き入れ最後に長ねぎを加える。','玄米ご飯・豚汁・ひじき煮を盛り合わせる。']},
+
+{id:29,emoji:'🐟',grad:'linear-gradient(135deg,#84fab0,#8fd3f4)',cat:'夕食',catKey:'dinner',name:'鰯の梅しそ煮 × 玄米 × ほうれん草おひたし',desc:'最安値でDHA・EPA最高量を実現する鰯。梅の有機酸がカルシウムの骨への取り込みを促進する、日本の先人が生み出した栄養の知恵。',time:25,diff:'中',cal:460,dga:5,tags:['dinner','fish','highprotein'],goalMatch:['heart','bone','energy','beauty'],highlights:['DHA・EPA 4.2g','梅でCa吸収UP','ビタミンD豊富'],nut:{protein:30,carbs:46,fat:18,fiber:5,satFat:4.5,sodium:750,calcium:245,iron:4.2,vitD:560,potassium:720,omega3:4.2,vitC:15,folate:42,zinc:3.2},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.0},dgaNote:'鰯は青魚の中でも最もDHA・EPA含有量が多く（100gあたり約3g）、DGAの魚介類推奨基準を一食でほぼ達成します。梅干しのクエン酸はカルシウムと結合してCa-クエン酸塩となり腸管からの吸収率を高めます。しそのロズマリン酸は強力な抗酸化・抗炎症作用を持ちます。',ingredients:['鰯（頭・内臓処理済み）3尾','梅干し 2個','青しそ 5枚','生姜 1かけ','醤油 大さじ1.5','みりん 大さじ1.5','酒 大さじ2','砂糖 小さじ1','水 100ml','玄米ご飯 150g','ほうれん草 80g','醤油（おひたし用）少々'],steps:['鰯に熱湯をかけて臭みを取り、水気を拭く。','鍋に水・酒・みりん・醤油・砂糖・梅干し・生姜を入れて煮立て、鰯を加えて落とし蓋で12分煮る。','ほうれん草をゆでて水でさらし、醤油で和えておひたしにする。','玄米ご飯・鰯の梅しそ煮・おひたしを盛り付け、青しそをちらす。']},
+
+{id:30,emoji:'🍱',grad:'linear-gradient(135deg,#667eea,#764ba2)',cat:'昼食',catKey:'lunch',name:'筑前煮（博多風）× 玄米の定食',desc:'鶏肉と根菜・こんにゃく・乾物を炊き合わせた福岡の郷土料理。DGAのタンパク質多様性と多品目野菜摂取を一鍋で達成。',time:40,diff:'中',cal:430,dga:5,tags:['lunch','highprotein'],goalMatch:['energy','bone','heart','gut'],highlights:['多品目野菜','コラーゲン含','食物繊維9g'],nut:{protein:28,carbs:52,fat:10,fiber:9,satFat:2.5,sodium:720,calcium:145,iron:4.8,vitD:22,potassium:980,omega3:0.3,vitC:28,folate:68,zinc:3.5},dgaG:{veg:3.0,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:0.5},dgaNote:'DGAは1日2.5〜3カップ相当の多様な野菜摂取を推奨しています。筑前煮はれんこん（ビタミンC・食物繊維）・ごぼう（イヌリン・抗酸化物質）・人参（β-カロテン）・里芋（ガラクタン）・こんにゃく（グルコマンナン）と多様な食物繊維を一鍋で摂取できる和食の傑作です。',ingredients:['鶏もも肉 150g','れんこん 100g','ごぼう 80g','人参 80g','里芋 100g','こんにゃく 100g','干し椎茸 4枚','だし（椎茸の戻し汁含む）300ml','醤油 大さじ2','みりん 大さじ2','酒 大さじ2','砂糖 小さじ2','ごま油 小さじ1','玄米ご飯 150g'],steps:['干し椎茸を水で戻す（戻し汁はだしに使用）。根菜類を乱切りにして水にさらす。こんにゃくをちぎって塩もみ後下ゆでする。','鶏肉を一口大に切る。','鍋にごま油を熱し鶏肉を炒め、根菜・こんにゃく・椎茸を加えてさらに炒める。','だし・醤油・みりん・酒・砂糖を加え落とし蓋で20〜25分煮る。','煮汁が少なくなったら火を止め、玄米ご飯とともに盛り付ける。']},
+
+{id:31,emoji:'🥬',grad:'linear-gradient(135deg,#11998e,#38ef7d)',cat:'昼食',catKey:'lunch',name:'豆腐チャンプルー（沖縄式）× 玄米',desc:'沖縄の長寿食の知恵が凝縮。DGAが推奨する大豆製品・多様な野菜・卵を一緒に炒める完全栄養食。ゴーヤのモモルデシンが血糖管理を助ける。',time:20,diff:'易',cal:410,dga:5,tags:['lunch','vegetarian','highprotein'],goalMatch:['energy','beauty','gut','weight'],highlights:['大豆イソフラボン','ビタミンC高含','β-カロテン豊富'],nut:{protein:24,carbs:42,fat:16,fiber:7,satFat:3.2,sodium:640,calcium:220,iron:5.5,vitD:55,potassium:720,omega3:0.4,vitC:82,folate:95,zinc:3.2},dgaG:{veg:2.5,fruit:0,grain:2.0,protein:2.5,dairy:0,oils:1.5},dgaNote:'沖縄の伝統食は長年にわたり世界最高水準の長寿と関連づけられてきました。豆腐チャンプルーはDGAが推奨する大豆タンパク・多様な野菜・卵（コリン・ビタミンD）を一食で摂取できます。ゴーヤのモモルデシンとチャランチンはインスリン様作用で血糖値を安定させます。',ingredients:['木綿豆腐 200g','ゴーヤ 1本','卵 2個','スパム（減塩）または豚バラ 60g','もやし 100g','にら 30g','かつお節 適量','醤油 大さじ1','塩・こしょう 適量','ごま油 大さじ1','玄米ご飯 150g'],steps:['豆腐を水切りして一口大にちぎる。ゴーヤは縦割りにして種を取り3mm厚の半月切りにし、塩もみして苦味を軽減する。','フライパンにごま油を熱し豆腐を炒めて軽く焼き色をつける。','豚肉またはスパム・ゴーヤ・もやしを順に加えて炒める。','溶き卵を回しかけ大きく混ぜ、醤油・塩こしょうで調味。','にらを加えてさっと炒め、かつお節をのせる。玄米ご飯と盛り合わせる。']},
+
+{id:32,emoji:'🍲',grad:'linear-gradient(135deg,#f8b500,#e65c00)',cat:'夕食',catKey:'dinner',name:'鮭の石狩風味噌鍋',desc:'コラーゲン豊富な鮭の皮・野菜・豆腐・きのこを味噌仕立てで煮込む北海道の郷土鍋。DGAの多品目野菜とタンパク質多様性を一鍋で満たす。',time:25,diff:'易',cal:420,dga:5,tags:['dinner','fish','gut'],goalMatch:['beauty','bone','heart','gut'],highlights:['コラーゲン源','DHA・EPA豊富','きのこβ-グルカン'],nut:{protein:34,carbs:32,fat:16,fiber:8,satFat:3.8,sodium:860,calcium:195,iron:3.5,vitD:445,potassium:980,omega3:2.6,vitC:35,folate:65,zinc:3.8},dgaG:{veg:2.5,fruit:0,grain:0.5,protein:3.0,dairy:0,oils:0.5},dgaNote:'鮭の皮にはコラーゲン・アスタキサンチンが豊富で、DGAが推奨する魚介類摂取と美肌ケアを同時に達成できます。しめじ・えのき・まいたけのβ-グルカンは免疫細胞を活性化し、NK細胞活性を高めることが臨床研究で示されています。みその発酵成分が腸内環境を整えます。',ingredients:['生鮭（切り身）2切れ','木綿豆腐 150g','白菜 200g','しめじ 100g','えのき 100g','長ねぎ 1本','人参 60g','じゃがいも 1個','白みそ 大さじ2','赤みそ 大さじ1','だし 700ml','酒 大さじ2','バター 小さじ1'],steps:['じゃがいもを一口大に切って下ゆでする。白菜をざく切り、きのこをほぐし、ねぎを斜め切りにする。','鍋にだし・酒を入れて火にかけ、じゃがいも・人参・白菜を加えて5分煮る。','鮭・豆腐・きのこを加えてさらに5分煮る。','みそを溶き入れてバターを加える。煮立てすぎない。','ねぎをのせて完成。']},
+
+{id:33,emoji:'🍵',grad:'linear-gradient(135deg,#d4fc79,#96e6a1)',cat:'朝食',catKey:'breakfast',name:'だし茶漬け × 梅 × 海苔 × 玄米',desc:'体の芯から温まる朝食。DGAが重視する水分・電解質・発酵食品・全粒穀物を朝から一気に補給できる理想的な和食朝食。',time:10,diff:'易',cal:290,dga:4,tags:['breakfast','lowcalorie','fish'],goalMatch:['gut','energy','bone','weight'],highlights:['低カロリー完全食','発酵食品×海藻','胃腸にやさしい'],nut:{protein:14,carbs:48,fat:4,fiber:4,satFat:0.8,sodium:680,calcium:115,iron:2.2,vitD:85,potassium:480,omega3:0.8,vitC:5,folate:35,zinc:2.1},dgaG:{veg:0.5,fruit:0,grain:2.5,protein:1.0,dairy:0,oils:0},dgaNote:'日本の伝統的な朝食スタイルはDGAの「食事パターンの多様性」原則に合致します。かつお・昆布のだしはグルタミン酸・イノシン酸の旨味成分で消化酵素の分泌を促します。海苔はヨウ素・鉄・ビタミンB12を含む希少な植物性食品で、ビーガン・ベジタリアンに特に重要です。',ingredients:['玄米ご飯 150g','かつお・昆布だし 300ml','塩鮭（ほぐし）40g','梅干し 1個','焼き海苔 1/2枚','みつば（またはねぎ）適量','白ごま 少々','わさび（お好みで）少々'],steps:['だしを温めて塩少々で調味する。','玄米ご飯を器に盛り、ほぐした塩鮭・梅干し・刻んだ海苔・みつばをのせる。','熱々のだしを注ぎ、白ごまとわさびを添える。']},
+{id:34,emoji:'🍳',grad:'linear-gradient(135deg,#f6d365,#fda085)',cat:'昼食',catKey:'lunch',name:'親子丼 × 玄米',desc:'鶏肉と卵のW完全タンパクを出汁の旨味でまとめた日本の国民食。DGAのタンパク質多様性とビタミンDを一丼で達成。',time:20,diff:'易',cal:520,dga:4,tags:['lunch','highprotein'],goalMatch:['energy','bone','beauty','weight'],highlights:['タンパク質42g','コリン豊富','うま味で減塩効果'],nut:{protein:42,carbs:52,fat:16,fiber:4,satFat:4.5,sodium:720,calcium:115,iron:3.8,vitD:92,potassium:620,omega3:0.4,vitC:8,folate:88,zinc:3.8},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:3.5,dairy:0,oils:1.0},dgaNote:'DGA 2025-2030は毎食タンパク質を優先することを強調。鶏もも肉（良質ヘム鉄・亜鉛・B6）と卵（コリン・ビタミンD・ルテイン）のW使いで必須栄養素を効率補給。だしのグルタミン酸がうま味を引き出し塩分量を抑制できます。',ingredients:['鶏もも肉（皮なし）150g','卵 3個','玉ねぎ 1/2個','だし 150ml','醤油 大さじ1.5','みりん 大さじ1.5','酒 大さじ1','砂糖 小さじ1','三つ葉（またはねぎ）適量','玄米ご飯 150g'],steps:['玉ねぎを薄切り、鶏肉を一口大に切る。','小鍋にだし・醤油・みりん・酒・砂糖を合わせて煮立て、玉ねぎを入れて3分煮る。','鶏肉を加えて中火で4〜5分煮る。','溶き卵を回しかけ、半熟になったら火を止める。','玄米ご飯の上にのせ、三つ葉を散らす。']},
+{id:35,emoji:'🥔',grad:'linear-gradient(135deg,#a8c0ff,#3f2b96)',cat:'夕食',catKey:'dinner',name:'肉じゃが × 玄米 × 味噌汁',desc:'牛肉のヘム鉄×じゃがいものビタミンC×こんにゃくの水溶性食物繊維が揃う家庭料理の王様。DGAのタンパク多様性と根菜摂取を達成。',time:35,diff:'中',cal:490,dga:4,tags:['dinner','highprotein'],goalMatch:['energy','bone','gut','heart'],highlights:['ヘム鉄5.2mg','ビタミンC豊富','こんにゃくで腸活'],nut:{protein:28,carbs:58,fat:14,fiber:9,satFat:4.8,sodium:760,calcium:98,iron:5.2,vitD:8,potassium:1100,omega3:0.3,vitC:42,folate:62,zinc:4.2},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:0.5},dgaNote:'牛もも肉はヘム鉄・亜鉛・ビタミンB12の優れた供給源。DGA 2025-2030は化学添加物のない肉類を高品質タンパク質として位置づけています。じゃがいものビタミンCはコラーゲン合成を促し、こんにゃくのグルコマンナンが腸内善玉菌の餌となります。',ingredients:['牛もも薄切り 120g','じゃがいも 2個','玉ねぎ 1個','人参 1本','こんにゃく 100g','絹さや 20g','だし 250ml','醤油 大さじ2','みりん 大さじ2','酒 大さじ2','砂糖 小さじ2','ごま油 小さじ1','玄米ご飯 150g','豆腐 50g','わかめ 5g','みそ 大さじ1（汁用）'],steps:['じゃがいもを一口大に切って水にさらす。人参を乱切り、玉ねぎをくし切り、こんにゃくをちぎって下ゆでする。','鍋にごま油を熱し牛肉を炒め、野菜・こんにゃくを加えて炒める。','だし・醤油・みりん・酒・砂糖を加え落とし蓋で20分煮る。絹さやを加えてさっと煮る。','別鍋でだしを温め豆腐・わかめを加え、みそを溶き入れて味噌汁を作る。','玄米ご飯・肉じゃが・味噌汁を盛り合わせる。']},
+{id:36,emoji:'🫘',grad:'linear-gradient(135deg,#c6ea8d,#fe90af)',cat:'朝食',catKey:'breakfast',name:'納豆 × アボカド × 温玉の玄米朝食',desc:'日本最強の発酵食品・納豆にアボカドの健康脂肪と温泉卵のコリンを組み合わせた次世代の和食朝食。腸活×美肌×脳活の三冠。',time:10,diff:'易',cal:440,dga:5,tags:['breakfast','highprotein','gut'],goalMatch:['gut','beauty','energy','heart'],highlights:['納豆ビタミンK2','アボカド不飽和脂肪','葉酸&コリン豊富'],nut:{protein:22,carbs:42,fat:20,fiber:9,satFat:3.5,sodium:480,calcium:125,iron:3.2,vitD:55,potassium:780,omega3:1.4,vitC:18,folate:135,zinc:2.8},dgaG:{veg:0.5,fruit:1.0,grain:2.5,protein:2.0,dairy:0,oils:2.5},dgaNote:'納豆はDGA 2025-2030が重視する発酵食品の中でも特別な存在。ナットウキナーゼが血栓予防、ビタミンK2が骨密度維持、ポリグルタミン酸が腸内環境を改善します。アボカドのモノ不飽和脂肪酸が納豆のビタミンK2（脂溶性）の吸収率を最大化します。',ingredients:['納豆 1パック（タレ付き）','アボカド 1/2個','温泉卵 1個','玄米ご飯 150g','刻みねぎ 適量','わさび 少々','亜麻仁油（あれば）小さじ1'],steps:['納豆をよくかき混ぜ、タレを少量加える。','アボカドを薄切りにしてレモン汁を少々かける。','温泉卵を作る：沸騰した湯に卵を入れ火を止め蓋をして12分置く。','玄米ご飯を器に盛り、納豆・アボカド・温泉卵を並べる。','刻みねぎ・わさびをのせ、亜麻仁油をひと垂らして完成。']},
+{id:37,emoji:'🥩',grad:'linear-gradient(135deg,#fccb90,#d57eeb)',cat:'昼食',catKey:'lunch',name:'豚しゃぶ × 野菜たっぷりポン酢サラダ',desc:'加熱しすぎず豚肉のビタミンB1を最大限保持するしゃぶしゃぶ調理法。さっぱりポン酢×大根おろしで脂質代謝を促進する夏の定番。',time:20,diff:'易',cal:380,dga:4,tags:['lunch','highprotein','lowcalorie'],goalMatch:['weight','energy','beauty','heart'],highlights:['ビタミンB1豊富','低カロリー高タンパク','消化酵素で代謝促進'],nut:{protein:32,carbs:28,fat:14,fiber:7,satFat:4.2,sodium:620,calcium:88,iron:2.8,vitD:12,potassium:780,omega3:0.3,vitC:62,folate:78,zinc:3.5},dgaG:{veg:3.0,fruit:0,grain:0.5,protein:2.5,dairy:0,oils:1.0},dgaNote:'豚ロース赤身はビタミンB1含有量が牛肉の約10倍。糖質代謝の補酵素として疲労回復に直結します。しゃぶしゃぶ（75℃程度）はビタミンB1の熱変性を最小限に抑える最適調理法。大根おろしのジアスターゼが脂質の消化吸収を助けます。',ingredients:['豚ロース薄切り（赤身）150g','水菜 80g','大根 150g','きゅうり 1本','ミニトマト 8個','豆苗 40g','ポン酢 大さじ2','ごま油 小さじ1','すりごま 大さじ1','生姜（すりおろし）少々'],steps:['大根をすりおろして軽く水気を切る。野菜を食べやすい大きさに切る。','鍋に水を沸かし、豚肉を1枚ずつしゃぶしゃぶして冷水で締める。','ポン酢・ごま油・すりごま・生姜を混ぜてドレッシングを作る。','皿に水菜・豆苗・野菜を敷き、豚肉をのせて大根おろしを添える。','ドレッシングをかけて完成。']},
+{id:38,emoji:'🍜',grad:'linear-gradient(135deg,#43cea2,#185a9d)',cat:'夕食',catKey:'dinner',name:'けんちん汁 × 玄米 × 焼き魚定食',desc:'根菜・こんにゃく・豆腐・きのこを胡麻油で炒めてだしで煮た精進料理ルーツの汁物。野菜目標の大半を一汁で凝縮した和食の知恵。',time:30,diff:'中',cal:430,dga:5,tags:['dinner','gut','lowcalorie'],goalMatch:['gut','bone','weight','heart'],highlights:['野菜8品目','食物繊維12g','イソフラボン含'],nut:{protein:24,carbs:52,fat:12,fiber:12,satFat:2.2,sodium:780,calcium:225,iron:5.5,vitD:185,potassium:1050,omega3:0.8,vitC:28,folate:82,zinc:2.8},dgaG:{veg:3.0,fruit:0,grain:2.5,protein:2.0,dairy:0,oils:1.0},dgaNote:'けんちん汁はDGA 2025-2030が重視する野菜・豆類・発酵食品のすべてを一品で達成できる汁物。ごぼうのイヌリン・こんにゃくのグルコマンナン・豆腐のイソフラボンが腸内フローラの多様性を維持します。胡麻油の脂溶性成分がβ-カロテン吸収を促進。',ingredients:['木綿豆腐 150g','大根 100g','人参 80g','ごぼう 60g','里芋 80g','こんにゃく 80g','しめじ 80g','長ねぎ 1/2本','ごま油 大さじ1','だし 700ml','醤油 大さじ1.5','みりん 大さじ1','塩 少々','玄米ご飯 150g','焼き魚（あじ等）1切れ'],steps:['豆腐を水切り。根菜を乱切り、こんにゃくをちぎって下ゆで。','鍋にごま油を熱し、豆腐をちぎりながら炒める。根菜・こんにゃく・きのこを加えてさらに炒める。','だしを加えて野菜が柔らかくなるまで15分煮る。','醤油・みりん・塩で調味し、長ねぎを加える。','玄米ご飯・焼き魚と盛り合わせる。']},
+{id:39,emoji:'🐠',grad:'linear-gradient(135deg,#1a1a2e,#16213e)',cat:'昼食',catKey:'lunch',name:'海鮮丼（まぐろ・サーモン・いくら）× 玄米',desc:'ω-3脂肪酸・ビタミンD・良質タンパクを一丼に集結。DGAの魚介類推奨を最もおいしく達成できる贅沢な昼食。',time:15,diff:'易',cal:520,dga:5,tags:['lunch','fish','highprotein'],goalMatch:['heart','beauty','energy','bone'],highlights:['DHA・EPA 2.8g','アスタキサンチン','ビタミンD 580IU'],nut:{protein:38,carbs:52,fat:16,fiber:4,satFat:2.8,sodium:680,calcium:108,iron:3.5,vitD:580,potassium:820,omega3:2.8,vitC:12,folate:58,zinc:4.5},dgaG:{veg:0.5,fruit:0,grain:2.5,protein:3.5,dairy:0,oils:1.0},dgaNote:'まぐろ（DHA・EPA・セレン）×サーモン（アスタキサンチン・ビタミンD）×いくら（EPA・ビタミンD・ビタミンE）の組み合わせは脂溶性栄養素が相乗的に働く最強の抗酸化プレート。DGA 2025-2030が推奨する魚介類摂取を一食で充足できます。',ingredients:['刺身用まぐろ 80g','刺身用サーモン 60g','いくら 30g','玄米ご飯 150g','大葉 3枚','わさび 少々','醤油 小さじ2','きゅうり 1/3本','みょうが 1個','白ごま 少々'],steps:['玄米ご飯を器に盛り、大葉を敷く。','まぐろとサーモンを薄切りにする。','ご飯の上にまぐろ・サーモン・いくらを彩りよく盛る。','きゅうり（薄切り）・みょうが（薄切り）・白ごまをのせる。','わさびと醤油を添えて完成。']},
+{id:40,emoji:'🫚',grad:'linear-gradient(135deg,#f8b500,#ff6b6b)',cat:'昼食',catKey:'lunch',name:'豚の生姜焼き × キャベツ × 玄米',desc:'日本の定食屋の王様。豚肉のビタミンB1×生姜のショウガオール×キャベツのビタミンUが相乗的に消化器系を守る日本版プロテイン定食。',time:20,diff:'易',cal:530,dga:4,tags:['lunch','highprotein'],goalMatch:['energy','weight','gut','bone'],highlights:['ビタミンB1 1.2mg','ショウガオール抗炎症','キャベツビタミンU'],nut:{protein:34,carbs:52,fat:18,fiber:7,satFat:5.2,sodium:720,calcium:88,iron:3.2,vitD:12,potassium:720,omega3:0.3,vitC:58,folate:72,zinc:4.0},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.0},dgaNote:'豚ロースはビタミンB1の宝庫で、糖質代謝の促進に不可欠。DGA 2025-2030が推奨する化学添加物のない赤身肉の代表格。生姜の6-ショウガオールはNF-κBを抑制する抗炎症成分で、腸管の炎症を鎮めます。生キャベツのビタミンUは胃粘膜を保護します。',ingredients:['豚ロース薄切り 160g','キャベツ 150g','玉ねぎ 1/4個','おろし生姜 小さじ2','醤油 大さじ1.5','みりん 大さじ1.5','酒 大さじ1','ごま油 小さじ1','玄米ご飯 150g','みそ汁（わかめ・豆腐）1杯'],steps:['醤油・みりん・酒・おろし生姜を混ぜてたれを作り、豚肉を10分漬ける。','キャベツを千切りにして水にさらし、水気を切る。','フライパンにごま油を熱し、玉ねぎを炒め、豚肉をたれごと加えて強火で炒める。','たれが絡んでカラメル化したら火を止める。','玄米ご飯・キャベツ・生姜焼きを盛り合わせ、みそ汁を添える。']},
+{id:41,emoji:'🐟',grad:'linear-gradient(135deg,#f7971e,#ffd200)',cat:'夕食',catKey:'dinner',name:'ぶりの照り焼き × 大根おろし × 玄米定食',desc:'冬の王魚・ぶりのDHA×照り焼きのタレのうま味×大根おろしの消化酵素が揃う日本の冬の定食の王様。脂質たっぷりのぶりを大根おろしでさっぱり食べる日本の食の知恵。',time:25,diff:'易',cal:550,dga:4,tags:['dinner','fish','highprotein'],goalMatch:['heart','energy','beauty','bone'],highlights:['DHA・EPA 3.4g','ビタミンD 620IU','セレン豊富'],nut:{protein:36,carbs:50,fat:22,fiber:5,satFat:5.5,sodium:740,calcium:98,iron:2.8,vitD:620,potassium:740,omega3:3.4,vitC:15,folate:38,zinc:3.8},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.5},dgaNote:'ぶりはDHA・EPA含有量が特に多い青魚（100gあたりDHA1.7g・EPA0.9g）。DGA 2025-2030の週2回魚介類推奨をおいしく達成できる一品。大根おろしのジアスターゼが脂肪の消化を促し、ビタミンCが非ヘム鉄吸収を向上。照り焼きのみりんはアミノカルボニル反応で抗酸化物質を生成します。',ingredients:['ぶり切り身 2切れ（200g）','大根 200g','醤油 大さじ2','みりん 大さじ2','酒 大さじ1','砂糖 小さじ1','ごま油 小さじ1','玄米ご飯 150g','ほうれん草おひたし 60g','すだち（またはレモン）1/2個'],steps:['ぶりに塩をふって10分置き、水気を拭く。','醤油・みりん・酒・砂糖を合わせてたれを作る。','フライパンにごま油を熱し、ぶりを皮目から3分焼き、裏返して2分焼く。','たれを加えてスプーンでかけながら照りを出す。','大根をすりおろし、玄米ご飯・おひたしと盛り合わせ、すだちを添える。']},
+{id:42,emoji:'🥚',grad:'linear-gradient(135deg,#ffecd2,#fcb69f)',cat:'朝食',catKey:'breakfast',name:'卵かけご飯 × 具沢山みそ汁の和朝食',desc:'TKGと日本が誇る発酵食品みそで始まる最短・最高栄養密度の朝食。コリン×ビタミンD×発酵プロバイオティクスを10分で摂取。',time:10,diff:'易',cal:380,dga:4,tags:['breakfast','highprotein','gut'],goalMatch:['energy','gut','bone','beauty'],highlights:['コリン250mg','発酵プロバイオ','朝10分で完成'],nut:{protein:22,carbs:48,fat:12,fiber:6,satFat:3.2,sodium:720,calcium:175,iron:3.8,vitD:82,potassium:580,omega3:0.4,vitC:18,folate:98,zinc:2.5},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:1.5,dairy:0.5,oils:0.5},dgaNote:'卵のコリンは脳の神経伝達物質アセチルコリンの前駆体で、認知機能・記憶力の維持に不可欠。DGA 2025-2030はコリンを必須栄養素として強調。みそのプロバイオティクス（乳酸菌・麹菌）が腸内フローラを整え、豆腐・わかめ・根菜のプレバイオティクスと組み合わせることで腸活効果を最大化します。',ingredients:['玄米ご飯 150g','卵（生）2個','醤油 小さじ1','だし 500ml','みそ 大さじ1.5','木綿豆腐 80g','わかめ（乾燥）5g','人参 30g','大根 50g','長ねぎ 適量','刻みのり 適量'],steps:['鍋にだしを温め、人参・大根を細切りにして入れて5分煮る。','豆腐・わかめを加えてみそを溶き入れ、長ねぎを散らす。','玄米ご飯を器に盛り、真ん中に卵を割り入れる。','醤油を数滴たらし、刻みのりをのせる。','みそ汁とともに盛り付けて完成。']},
+{id:43,emoji:'🐚',grad:'linear-gradient(135deg,#89d8d3,#03c6c7)',cat:'夕食',catKey:'dinner',name:'あさりの酒蒸し × 玄米 × 野菜みそ汁',desc:'鉄分・亜鉛・ビタミンB12・タウリンが驚異的な濃度で凝縮されたあさり。酒蒸しはこれらの栄養素を最も効率よく摂取できる調理法。',time:15,diff:'易',cal:350,dga:5,tags:['dinner','fish','lowcalorie'],goalMatch:['energy','bone','heart','beauty'],highlights:['鉄分15mg','亜鉛8.5mg','ビタミンB12 60μg'],nut:{protein:24,carbs:46,fat:6,fiber:5,satFat:0.8,sodium:780,calcium:165,iron:15,vitD:0,potassium:650,omega3:0.4,vitC:22,folate:45,zinc:8.5},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:0.5},dgaNote:'あさりは100gあたり鉄分8mg・亜鉛4.2mg・ビタミンB123.5μgを含む貝類の王様。DGA 2025-2030が重視する高タンパク・鉄・亜鉛の供給源として最優秀。タウリンは肝機能・心臓・視力の保護に働き、コハク酸（旨味成分）が消化酵素の分泌を刺激します。',ingredients:['あさり（砂抜き済み）300g','酒 100ml','バター 10g','にんにく 2片','長ねぎ 適量','パセリ 適量','玄米ご飯 150g','だし 400ml','みそ 大さじ1','ほうれん草 60g','えのき 50g'],steps:['あさりをこすり合わせてよく洗う。にんにくを薄切りにする。','フライパンにバター・にんにくを入れて香りを出し、あさりを入れて酒を加える。','蓋をして強火で2〜3分、全部口が開いたらねぎ・パセリを散らす。','別鍋でだしを温め、ほうれん草・えのきを煮てみそを溶き入れる。','玄米ご飯・あさりの酒蒸し・みそ汁を盛り合わせる。']},
+{id:44,emoji:'🍚',grad:'linear-gradient(135deg,#56ab2f,#a8e063)',cat:'昼食',catKey:'lunch',name:'鶏ごぼう × 玄米の炊き込みご飯定食',desc:'だしで炊き込む和食の知恵でごぼうのイヌリン×鶏肉のタンパク×玄米の全粒穀物が一体化。腸活と骨格筋合成を同時に達成する完全定食。',time:40,diff:'中',cal:460,dga:5,tags:['lunch','highprotein','gut'],goalMatch:['gut','energy','bone','heart'],highlights:['イヌリン腸活','うまみ凝縮','骨格筋合成'],nut:{protein:30,carbs:62,fat:10,fiber:10,satFat:2.5,sodium:680,calcium:88,iron:3.8,vitD:22,potassium:880,omega3:0.3,vitC:8,folate:55,zinc:3.5},dgaG:{veg:2.0,fruit:0,grain:3.0,protein:2.5,dairy:0,oils:0.5},dgaNote:'炊き込みご飯はだし（グルタミン酸+イノシン酸）が全食材に浸透し、少ない塩分で深い旨味を実現する日本の減塩調理の知恵。ごぼうのイヌリンはビフィズス菌の選択的増殖を促す代表的プレバイオティクス。DGA 2025-2030の腸内マイクロバイオーム重視の方針に完全合致。',ingredients:['玄米 2合','鶏もも肉（皮なし）150g','ごぼう 100g','人参 60g','干し椎茸 3枚','油揚げ 1枚','醤油 大さじ2','みりん 大さじ2','酒 大さじ2','だし（椎茸の戻し汁含む）適量','三つ葉 適量'],steps:['玄米を洗って30分浸水。干し椎茸を水で戻す。','ごぼうを笹がきにして水にさらす。鶏肉・人参・椎茸・油揚げを細切りにする。','炊飯器に玄米・だし・醤油・みりん・酒を入れ、具材をすべてのせて炊く。','炊き上がったら全体を混ぜ、三つ葉を散らす。','好みで漬物・みそ汁を添えて定食に。']},
+{id:45,emoji:'🐟',grad:'linear-gradient(135deg,#ee0979,#ff6a00)',cat:'夕食',catKey:'dinner',name:'鯛の兜煮 × 玄米 × 菜の花おひたし',desc:'コラーゲン・DHA・亜鉛が豊富な鯛の頭を飴色に煮付けた格式ある和食。だし文化の真髄と日本の余すところなく食べる食の哲学を体現。',time:35,diff:'中',cal:400,dga:5,tags:['dinner','fish','highprotein'],goalMatch:['beauty','bone','heart','energy'],highlights:['コラーゲン豊富','DHA・EPA 2.1g','亜鉛5.2mg'],nut:{protein:34,carbs:42,fat:12,fiber:5,satFat:2.8,sodium:760,calcium:155,iron:3.2,vitD:280,potassium:780,omega3:2.1,vitC:38,folate:88,zinc:5.2},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:0.5},dgaNote:'鯛の頭部はコラーゲン・エラスチンが豊富で、皮膚・軟骨・血管壁の修復をサポート。DHA・EPA（2.1g）がDGAの魚介類推奨を達成。菜の花はビタミンC・葉酸・β-カロテン・カルシウムを高濃度で含む春の栄養野菜で、鉄の吸収率を高めます。',ingredients:['鯛の頭（兜割り）1個（約300g）','醤油 大さじ3','みりん 大さじ3','酒 大さじ3','砂糖 大さじ1','水 200ml','生姜 2かけ','玄米ご飯 150g','菜の花 80g','白ごま 少々'],steps:['鯛の頭に熱湯をかけて霜降りにし、臭みを除く。','鍋に水・醤油・みりん・酒・砂糖・生姜スライスを入れて煮立てる。','鯛の頭を入れて落とし蓋をし、中火で15〜20分煮る。','菜の花を塩ゆでして水でさらし、白ごまを和える。','玄米ご飯とともに盛り付け、煮汁を少々かける。']}
+,{id:46,emoji:'🍢',grad:'linear-gradient(135deg,#f7971e,#ffd200)',cat:'夕食',catKey:'dinner',name:'鶏つくね × 玄米 × みそ汁定食',desc:'手ごねつくねで鶏軟骨・長ねぎ・生姜を余すところなく使う日本の伝統食。コラーゲン×タンパク×発酵みそで骨と腸を同時にケア。',time:25,diff:'中',cal:480,dga:4,tags:['dinner','highprotein'],goalMatch:['bone','energy','gut','beauty'],highlights:['コラーゲン含','タンパク質36g','生姜抗炎症'],nut:{protein:36,carbs:50,fat:14,fiber:6,satFat:3.5,sodium:740,calcium:145,iron:3.5,vitD:18,potassium:680,omega3:0.4,vitC:12,folate:52,zinc:4.2},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:0.5},dgaNote:'DGA 2025-2030は高品質タンパク質を毎食摂ることを強調。鶏むね+ももの合挽きは必須アミノ酸をバランスよく含み、軟骨のコンドロイチンが関節軟骨の修復をサポート。みそのプロバイオティクスと長ねぎのフルクタンが腸内フローラを整えます。',ingredients:['鶏ひき肉 180g','鶏軟骨（みじん切り）40g','長ねぎ 1/2本','おろし生姜 小さじ1','卵 1個','片栗粉 大さじ1','醤油 大さじ1','みりん 大さじ1','酒 大さじ1','砂糖 小さじ1','玄米ご飯 150g','みそ汁 1杯'],steps:['鶏ひき肉・軟骨・ねぎ・生姜・卵・片栗粉を混ぜてよくこねる。','小判形や丸形に成形する。','フライパンに油を熱し両面を焼き、醤油・みりん・酒・砂糖のたれを絡める。','玄米ご飯・みそ汁と盛り合わせる。']}
+,{id:47,emoji:'🍆',grad:'linear-gradient(135deg,#614385,#516395)',cat:'昼食',catKey:'lunch',name:'蒸しなす × ポン酢 × 玄米定食',desc:'加熱でナスナンと蒸し上げ、ポン酢と生姜でさっぱり食べる夏の定番。ナスのアントシアニン×柚子ポン酢のビタミンCが強力な抗酸化ペアを形成。',time:15,diff:'易',cal:320,dga:4,tags:['lunch','vegetarian','lowcalorie'],goalMatch:['beauty','weight','heart','gut'],highlights:['アントシアニン豊富','低カロリー','腸活食物繊維'],nut:{protein:12,carbs:52,fat:6,fiber:8,satFat:0.8,sodium:580,calcium:88,iron:2.5,vitD:0,potassium:680,omega3:0.2,vitC:28,folate:68,zinc:1.5},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:1.0,dairy:0,oils:0.5},dgaNote:'なすのナスニン（アントシアニン）はLDL酸化を防ぐ強力な抗酸化物質。DGA 2025-2030が推奨する「多様な色の野菜」を実践する代表的な紫色野菜です。ポン酢の柑橘ビタミンCが鉄吸収を促進し、生姜のジンゲロールが炎症を抑制します。',ingredients:['なす 3本','長ねぎ 適量','おろし生姜 少々','ポン酢 大さじ2','ごま油 小さじ1','みょうが 1個','青しそ 3枚','白ごま 少々','玄米ご飯 150g','みそ汁 1杯'],steps:['なすを縦半分に切り、皮に切り込みを入れる。','耐熱皿に並べラップをして電子レンジ600Wで5〜6分加熱する。','粗熱を取り、食べやすくさく。','薬味（ねぎ・みょうが・しそ）をのせ、ポン酢・ごま油をかける。','白ごまをふって玄米ご飯と盛り合わせる。']}
+,{id:48,emoji:'🦪',grad:'linear-gradient(135deg,#1a1a2e,#0f3460)',cat:'夕食',catKey:'dinner',name:'牡蠣の土手鍋 × 玄米',desc:'亜鉛・鉄・ビタミンB12が貝類最高濃度の牡蠣を、濃厚みそ仕立てで味わう冬の鍋料理。「海のミルク」が免疫・生殖・脳機能を一食で強化。',time:25,diff:'易',cal:420,dga:5,tags:['dinner','fish','highprotein'],goalMatch:['bone','energy','heart','beauty'],highlights:['亜鉛13mg','鉄3.8mg','ビタミンB12豊富'],nut:{protein:28,carbs:48,fat:12,fiber:7,satFat:2.5,sodium:820,calcium:188,iron:3.8,vitD:320,potassium:820,omega3:1.2,vitC:22,folate:58,zinc:13},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:0.5},dgaNote:'牡蠣は亜鉛含有量が全食品中最高（100gで13mg）。DGA 2025-2030が強調する高品質タンパク質の中でも特に微量元素が豊富。亜鉛は免疫細胞・精子・テストステロン・コラーゲン合成・インスリン分泌に不可欠です。タウリンが肝機能と心臓を保護します。',ingredients:['牡蠣（むき身）200g','白菜 200g','豆腐 150g','長ねぎ 1本','しめじ 80g','白みそ 大さじ3','赤みそ 大さじ1','だし 600ml','酒 大さじ2','みりん 大さじ1','玄米ご飯 150g'],steps:['牡蠣を塩水で振り洗いし水気を切る。','土鍋の縁にみそを塗り付ける（土手を作る）。','だし・酒を入れて煮立て、白菜・ねぎ・豆腐・きのこを煮る。','牡蠣を加えて1〜2分煮る（煮すぎない）。','土手のみそを少しずつ溶かしながら食べる。玄米ご飯を添える。']}
+,{id:49,emoji:'🥣',grad:'linear-gradient(135deg,#c9d6ff,#e2e2e2)',cat:'朝食',catKey:'breakfast',name:'ひじきと大豆の煮物 × 玄米朝食',desc:'カルシウム・鉄・イソフラボンが揃う昔ながらの惣菜を朝食に。乾物の底力を現代栄養学が証明した和食の定番副菜。',time:30,diff:'中',cal:370,dga:5,tags:['breakfast','vegetarian','gut'],goalMatch:['bone','gut','heart','beauty'],highlights:['カルシウム280mg','鉄6.5mg','イソフラボン'],nut:{protein:18,carbs:52,fat:8,fiber:11,satFat:1.0,sodium:580,calcium:280,iron:6.5,vitD:0,potassium:620,omega3:0.3,vitC:5,folate:85,zinc:2.2},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:2.0,dairy:0,oils:0.5},dgaNote:'ひじきはカルシウムを牛乳の約14倍含む海藻（乾燥100gあたり1400mg）。DGA 2025-2030が推奨する植物性カルシウムの最良供給源。大豆のイソフラボンが骨密度維持に働き、水溶性食物繊維が腸内善玉菌を選択的に増殖させます。',ingredients:['乾燥ひじき 15g','大豆（水煮）100g','人参 60g','油揚げ 1枚','だし 150ml','醤油 大さじ1.5','みりん 大さじ1.5','砂糖 小さじ1','ごま油 小さじ1','玄米ご飯 150g','みそ汁 1杯'],steps:['ひじきを水で20分戻す。人参を千切り、油揚げを短冊切りにする。','ごま油で人参・油揚げを炒め、水気を切ったひじきと大豆を加える。','だし・醤油・みりん・砂糖を加えて汁気がなくなるまで中火で煮る。','玄米ご飯・みそ汁とともに盛り付ける。']}
+,{id:50,emoji:'🍱',grad:'linear-gradient(135deg,#3a1c71,#d76d77)',cat:'昼食',catKey:'lunch',name:'五目きんぴら × 玄米 × 魚定食',desc:'ごぼう・人参・れんこん・こんにゃくを炒め煮したきんぴらは食物繊維の塊。DGAの腸活・野菜多様性・ミネラル補給を一副菜で達成。',time:20,diff:'易',cal:430,dga:5,tags:['lunch','gut'],goalMatch:['gut','bone','weight','heart'],highlights:['食物繊維13g','腸活最強惣菜','ミネラル豊富'],nut:{protein:24,carbs:56,fat:10,fiber:13,satFat:1.8,sodium:680,calcium:145,iron:4.2,vitD:180,potassium:920,omega3:0.8,vitC:18,folate:62,zinc:2.8},dgaG:{veg:3.0,fruit:0,grain:2.5,protein:2.0,dairy:0,oils:1.0},dgaNote:'ごぼうのイヌリン・れんこんのペクチン・こんにゃくのグルコマンナンは異なる腸内細菌群を育てる多様なプレバイオティクス。DGA 2025-2030の腸内マイクロバイオーム重視の方針に合致する腸活最強の副菜です。',ingredients:['ごぼう 80g','人参 60g','れんこん 80g','こんにゃく 80g','油揚げ 1/2枚','醤油 大さじ1.5','みりん 大さじ1.5','酒 大さじ1','砂糖 小さじ1','ごま油 大さじ1','白ごま 少々','玄米ご飯 150g','焼き鯵 1尾'],steps:['ごぼう・れんこんを斜め薄切り、人参を細切り、こんにゃくをちぎって下ゆで。','フライパンにごま油を熱し全材料を炒める。','醤油・みりん・酒・砂糖を加えて汁気がなくなるまで炒り煮する。','白ごまをふって玄米ご飯・焼き鯵と盛り合わせる。']}
+,{id:51,emoji:'🐡',grad:'linear-gradient(135deg,#4facfe,#00f2fe)',cat:'夕食',catKey:'dinner',name:'鱈の粕汁 × 玄米',desc:'酒粕の発酵パワー×鱈の良質タンパク×根菜の食物繊維が揃う冬の養生食。体の芯から温まるDGA準拠の発酵スープ定食。',time:25,diff:'中',cal:410,dga:5,tags:['dinner','fish','gut'],goalMatch:['gut','bone','energy','heart'],highlights:['酒粕プロバイオ','セレン豊富','根菜食物繊維'],nut:{protein:30,carbs:50,fat:8,fiber:9,satFat:1.5,sodium:780,calcium:175,iron:3.2,vitD:285,potassium:880,omega3:1.5,vitC:22,folate:58,zinc:2.8},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:0.5},dgaNote:'酒粕はアルコールが飛んだ後も乳酸菌・麹菌・ビタミンB群・必須アミノ酸・レジスタントプロテインが豊富。DGA 2025-2030が注目する腸内フローラ改善に貢献する発酵食品の代表格です。鱈はセレン・ビタミンD・低カロリー高タンパクを同時に達成。',ingredients:['鱈の切り身 2切れ','大根 100g','人参 80g','里芋 80g','こんにゃく 60g','酒粕 50g','白みそ 大さじ1','だし 600ml','酒 大さじ2','醤油 小さじ1','長ねぎ 適量','玄米ご飯 150g'],steps:['鱈に塩をふって10分置き熱湯で霜降りにする。','根菜を一口大に切る。鍋にだし・酒を入れ根菜を10分煮る。','鱈・こんにゃくを加えて5分煮る。','酒粕をだし少量で溶き入れ、みそと醤油で調味する。','長ねぎを散らし、玄米ご飯とともに盛り付ける。']}
+,{id:52,emoji:'🍖',grad:'linear-gradient(135deg,#eb3349,#f45c43)',cat:'夕食',catKey:'dinner',name:'豚の角煮（ヘルシー版）× 玄米',desc:'低温長時間加熱でコラーゲンをゼラチンに変換した豚ばら煮。脂を丁寧に落としてDGA基準内に収めながらコラーゲン効果を最大化。',time:90,diff:'中',cal:540,dga:3,tags:['dinner','highprotein'],goalMatch:['beauty','bone','energy','weight'],highlights:['コラーゲン豊富','長時間低温調理','ビタミンB1'],nut:{protein:34,carbs:48,fat:22,fiber:4,satFat:7.5,sodium:760,calcium:72,iron:3.2,vitD:8,potassium:680,omega3:0.4,vitC:18,folate:42,zinc:4.5},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:0.5},dgaNote:'豚ばらのコラーゲンは90℃以上・長時間加熱でゼラチンに変換され、腸管吸収率が飛躍的に向上します。一度茹でてから冷やし、表面の飽和脂肪を取り除くことでDGA基準内に収められます。ビタミンB1が糖質代謝を促進し、エネルギー産生を高めます。',ingredients:['豚バラかたまり 300g','生姜 3かけ','長ねぎ（青い部分）1本分','醤油 大さじ3','みりん 大さじ3','酒 大さじ3','砂糖 大さじ1','水 適量','チンゲン菜 1株','玄米ご飯 150g'],steps:['豚バラを熱湯で30分下ゆでする。冷蔵庫で冷やし表面の脂を取り除く。','4cm角に切り、鍋に水・醤油・みりん・酒・砂糖・生姜・ねぎを合わせ豚肉を1時間煮込む。','チンゲン菜をさっとゆでて添える。','玄米ご飯と盛り合わせ、煮汁をかける。']}
+,{id:53,emoji:'🍣',grad:'linear-gradient(135deg,#f7797d,#fbd3e9)',cat:'昼食',catKey:'lunch',name:'手巻き寿司（サーモン・アボカド・納豆）× 玄米',desc:'家族で楽しめる手巻き寿司を玄米で。発酵×魚油×健康脂肪のドリームチームをのりで包む、DGAの多様なタンパク質戦略を体現した一食。',time:20,diff:'易',cal:490,dga:5,tags:['lunch','fish','highprotein','gut'],goalMatch:['heart','gut','beauty','energy'],highlights:['DHA・EPA 1.8g','発酵納豆','アボカド良質脂肪'],nut:{protein:28,carbs:54,fat:18,fiber:8,satFat:3.2,sodium:580,calcium:148,iron:3.8,vitD:280,potassium:780,omega3:1.8,vitC:15,folate:128,zinc:3.2},dgaG:{veg:1.0,fruit:0.5,grain:2.5,protein:2.5,dairy:0,oils:2.0},dgaNote:'DGA 2025-2030の「高品質タンパク質×発酵食品×健康的な脂肪」を一皿で体現。焼きのりはヨウ素・鉄・ビタミンB12を含む希少な植物性食品。玄米の食物繊維が寿司飯の血糖値上昇を緩やかにします。',ingredients:['玄米（すし飯用）150g','酢 大さじ1','砂糖 小さじ1','塩 少々','刺身用サーモン 80g','アボカド 1/2個','納豆 1パック','きゅうり 1/2本','焼きのり 4枚','わさび 少々','醤油 少々'],steps:['玄米を炊き酢・砂糖・塩を合わせてすし飯を作る。','サーモンを薄切り、アボカドをスライス、きゅうりを棒状に切る。','のりの上にすし飯を広げ、具材をのせてくるっと巻く。','わさび醤油で食べる。']}
+,{id:54,emoji:'🍛',grad:'linear-gradient(135deg,#e1f5c4,#ebb582)',cat:'夕食',catKey:'dinner',name:'鶏と根菜の和風カレー × 玄米',desc:'カレースパイス×日本のだし×根菜の融合。ターメリックのクルクミン×生姜のショウガオール×鶏肉のタンパクが抗炎症×筋合成を同時に促進。',time:40,diff:'中',cal:560,dga:4,tags:['dinner','highprotein'],goalMatch:['energy','gut','heart','weight'],highlights:['クルクミン抗炎症','根菜食物繊維','高タンパク'],nut:{protein:38,carbs:62,fat:14,fiber:10,satFat:3.2,sodium:680,calcium:105,iron:4.5,vitD:22,potassium:980,omega3:0.4,vitC:28,folate:72,zinc:4.2},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.0},dgaNote:'ターメリックのクルクミンは黒こしょうのピペリンと組み合わせることで生体利用率が2000%向上します。DGA 2025-2030が推奨するスパイス類は抗炎症・抗酸化成分を塩分・砂糖なしで料理に付加できる最高のフレーバーツールです。',ingredients:['鶏もも肉 200g','じゃがいも 2個','人参 1本','玉ねぎ 1個','れんこん 80g','にんにく 2片','生姜 1かけ','カレー粉 大さじ1.5','ターメリック 小さじ1/2','黒こしょう 少々','だし 400ml','玄米ご飯 150g','福神漬け（少量）'],steps:['鶏肉・野菜を一口大に切る。にんにく・生姜をみじん切りにする。','鍋に油を熱しにんにく・生姜・玉ねぎを炒め、カレー粉・ターメリックを加えて香りを出す。','鶏肉と根菜を加えて炒め、だしを加えて20〜25分煮込む。','塩・こしょうで調味し、玄米ご飯に盛り付ける。']}
+,{id:55,emoji:'🥟',grad:'linear-gradient(135deg,#d3cce3,#e9e4f0)',cat:'昼食',catKey:'lunch',name:'蒸し餃子（豚×キャベツ×生姜）× 玄米',desc:'揚げずに蒸すことで脂質を最小化した餃子。豚肉のB1×キャベツのビタミンU×生姜の消化促進が消化器系を強化する発酵皮なしの一品。',time:30,diff:'中',cal:420,dga:4,tags:['lunch','highprotein'],goalMatch:['energy','gut','weight','bone'],highlights:['ビタミンB1豊富','キャベツビタミンU','蒸しで低脂質'],nut:{protein:28,carbs:48,fat:12,fiber:6,satFat:3.8,sodium:680,calcium:88,iron:3.2,vitD:12,potassium:620,omega3:0.3,vitC:42,folate:65,zinc:3.5},dgaG:{veg:2.0,fruit:0,grain:2.0,protein:2.5,dairy:0,oils:0.5},dgaNote:'焼き餃子より蒸し餃子はカロリーを約30%削減できます。キャベツのビタミンUはメチルメチオニンスルホニウムとも呼ばれ、胃粘膜の修復・保護に働く成分で、日本初の胃腸薬キャベジンの由来成分です。DGAが推奨する野菜多様性と豚肉の高品質タンパクを組み合わせた一品。',ingredients:['豚ひき肉 150g','キャベツ 200g','長ねぎ 1/2本','おろし生姜 小さじ1','おろしにんにく 小さじ1','醤油 大さじ1','ごま油 大さじ1','塩・こしょう 少々','餃子の皮（全粒粉）15枚','ポン酢・ラー油（添え）'],steps:['キャベツを塩もみして水気を絞りみじん切りに、ねぎもみじん切りにする。','豚ひき肉に調味料・野菜を混ぜてよくこねる。','皮に包んで蒸し器で12分蒸す。','ポン酢・ラー油で食べる。']}
+,{id:56,emoji:'🥗',grad:'linear-gradient(135deg,#1a3a5c,#2d7dd2)',cat:'昼食',catKey:'lunch',name:'ニース風サラダ（ツナ×卵×オリーブ）',desc:'南フランス・ニースの太陽を凝縮した地中海サラダ。ツナのDHA×卵のビタミンD×オリーブのポリフェノールが一皿で揃う栄養の宝庫。',time:15,diff:'易',cal:420,dga:5,tags:['lunch','fish','highprotein','lowcalorie'],goalMatch:['heart','beauty','weight','energy'],highlights:['DHA豊富','ビタミンD源','オレウロペイン'],nut:{protein:32,carbs:28,fat:22,fiber:7,satFat:3.5,sodium:560,calcium:128,iron:4.2,vitD:185,potassium:820,omega3:1.8,vitC:68,folate:88,zinc:2.8},dgaG:{veg:3.0,fruit:0,grain:0.5,protein:3.0,dairy:0,oils:2.0},dgaNote:'地中海食は世界最多のエビデンスを持つ食事パターン。DGA 2025-2030も強く推奨しています。ツナ（水煮）は低脂肪・高タンパクのオメガ3源。グリーンオリーブのオレウロペインは同量のオリーブオイルを上回る抗酸化活性を持ちます。',ingredients:['マグロ缶（水煮）1缶','卵 2個（固ゆで）','ミックスリーフ 60g','ミニトマト 8個','グリーンビーンズ 80g','グリーンオリーブ 8粒','アンチョビ 3枚','EVオリーブオイル 大さじ2','レモン汁 大さじ1','ディジョンマスタード 小さじ1','塩・こしょう 適量'],steps:['卵を固ゆでにして半分に切る。グリーンビーンズを塩ゆでにする。','ドレッシング：オリーブオイル・レモン汁・マスタード・塩こしょうを乳化させる。','皿にリーフを敷き、ツナ・卵・トマト・豆・オリーブ・アンチョビを美しく並べる。','ドレッシングをかけて完成。']}
+,{id:57,emoji:'🍗',grad:'linear-gradient(135deg,#f2994a,#f2c94c)',cat:'夕食',catKey:'dinner',name:'鶏肉のレモンハーブオーブン焼き × ローストベジタブル',desc:'地中海ハーブ×レモン×EVオリーブオイルのシンプルマリネで焼き上げる高タンパク・低飽和脂肪の定番ディナー。',time:45,diff:'易',cal:510,dga:5,tags:['dinner','highprotein','lowcalorie'],goalMatch:['weight','energy','heart','beauty'],highlights:['高タンパク42g','低飽和脂肪','ポリフェノール豊富'],nut:{protein:42,carbs:24,fat:22,fiber:6,satFat:3.5,sodium:520,calcium:88,iron:3.2,vitD:35,potassium:920,omega3:0.5,vitC:72,folate:78,zinc:4.5},dgaG:{veg:3.0,fruit:0,grain:0,protein:3.5,dairy:0,oils:2.5},dgaNote:'鶏もも肉（皮なし）は飽和脂肪が少なく亜鉛・ナイアシン・B6が豊富。DGA 2025-2030の「毎食タンパク質優先」を達成できる最も手軽な食材の一つ。ハーブ（ローズマリー・タイム）のロズマリン酸・チモールが抗菌・抗炎症作用を発揮します。',ingredients:['鶏もも肉（皮なし）250g','レモン 1個','にんにく 3片','ローズマリー 2枝','タイム 2枝','EVオリーブオイル 大さじ3','ズッキーニ 1本','パプリカ（赤・黄）各1個','cherry tomato 10個','塩・こしょう 適量'],steps:['鶏肉にレモン汁・すりおろしにんにく・ハーブ・オリーブオイル・塩こしょうをもみ込み30分マリネする。','野菜を一口大に切り、塩・オリーブオイルで和える。','天板に鶏肉と野菜を並べ、200℃で25〜30分焼く。','レモンをしぼりかけて完成。']}
+,{id:58,emoji:'🥦',grad:'linear-gradient(135deg,#11998e,#38ef7d)',cat:'昼食',catKey:'lunch',name:'ブロッコリー×ほうれん草のグリーンスープ',desc:'十字花科野菜のスルフォラファン×葉酸×鉄が濃縮されたデトックスグリーンスープ。EVオリーブオイルで仕上げた低カロリー・高栄養密度の一杯。',time:20,diff:'易',cal:280,dga:5,tags:['lunch','vegetarian','lowcalorie'],goalMatch:['beauty','weight','heart','gut'],highlights:['スルフォラファン','葉酸高含','低カロリー'],nut:{protein:14,carbs:28,fat:14,fiber:9,satFat:2.0,sodium:480,calcium:215,iron:5.8,vitD:0,potassium:880,omega3:0.4,vitC:135,folate:210,zinc:1.8},dgaG:{veg:3.0,fruit:0,grain:0.5,protein:1.0,dairy:0.5,oils:1.5},dgaNote:'ブロッコリーのスルフォラファンはNrf2経路を活性化し体内の解毒酵素を誘導。DGA 2025-2030が「本物の食品」として強調する野菜の中でも特にファイトケミカルが豊富です。ほうれん草の葉酸・非ヘム鉄をビタミンCが最大化して吸収します。',ingredients:['ブロッコリー 200g','ほうれん草 100g','玉ねぎ 1/2個','にんにく 2片','野菜ブロス 400ml','牛乳（または豆乳）100ml','EVオリーブオイル 大さじ1.5','塩・こしょう 適量','ナツメグ 少々','全粒粉パン 1枚'],steps:['玉ねぎ・にんにくをオリーブオイルで炒める。','ブロッコリー・ほうれん草とブロスを加えて10分煮る。','ミキサーで滑らかにし、牛乳を加えて温める。','塩・こしょう・ナツメグで調味し、オリーブオイルをひと回しかける。','全粒粉パンを添える。']}
+,{id:59,emoji:'🫓',grad:'linear-gradient(135deg,#f7971e,#ffd200)',cat:'朝食',catKey:'breakfast',name:'ターキー×アボカド×全粒粉サンドイッチ',desc:'アメリカ発の高タンパク・低脂肪ランチの王道。七面鳥の胸肉×アボカド×全粒粉パンはDGA 2025-2030の「高品質タンパク×健康的な脂肪×全粒穀物」を完璧に体現。',time:10,diff:'易',cal:450,dga:5,tags:['breakfast','highprotein','lowcalorie'],goalMatch:['weight','energy','beauty','bone'],highlights:['高タンパク低脂肪','モノ不飽和脂肪酸','全粒粉'],nut:{protein:38,carbs:42,fat:16,fiber:8,satFat:3.2,sodium:580,calcium:128,iron:3.5,vitD:18,potassium:680,omega3:0.5,vitC:28,folate:88,zinc:3.8},dgaG:{veg:1.5,fruit:0.5,grain:2.0,protein:3.0,dairy:0,oils:1.5},dgaNote:'七面鳥の胸肉は同量の鶏胸肉を上回るタンパク質密度を持ちながら飽和脂肪が極めて少ない。DGA 2025-2030が推奨するタンパク質食品グループの優秀メンバー。アボカドのβ-シトステロールがLDLコレステロールを低下させます。',ingredients:['七面鳥（ターキー）胸肉スライス 100g','全粒粉パン 2枚','アボカド 1/2個','ロメインレタス 2枚','トマト 1/2個','ディジョンマスタード 小さじ1','レモン汁 少々','塩・こしょう 適量'],steps:['アボカドをつぶしてレモン汁・塩こしょうで和える。','パンをトーストし、マスタードを薄く塗る。','レタス・トマト・ターキー・アボカドペーストを重ねる。','斜めに切って盛り付ける。']}
+,{id:60,emoji:'🥘',grad:'linear-gradient(135deg,#f093fb,#f5576c)',cat:'夕食',catKey:'dinner',name:'モロッコ風チキンタジン × クスクス',desc:'シナモン×クミン×コリアンダー×サフランの香辛料と鶏肉・オリーブ・ドライフルーツの融合。北アフリカの抗炎症スパイス食をDGA視点で最適化。',time:50,diff:'中',cal:540,dga:5,tags:['dinner','highprotein'],goalMatch:['heart','energy','gut','weight'],highlights:['スパイス抗炎症','ポリフェノール豊富','全粒クスクス'],nut:{protein:40,carbs:55,fat:16,fiber:9,satFat:3.0,sodium:560,calcium:108,iron:4.8,vitD:28,potassium:880,omega3:0.5,vitC:38,folate:82,zinc:4.2},dgaG:{veg:2.0,fruit:1.0,grain:2.0,protein:3.0,dairy:0,oils:1.5},dgaNote:'モロッコ料理は地中海食の一部として心血管疾患・糖尿病リスクを低減することが複数の疫学研究で示されています。シナモンのシンナムアルデヒドが血糖値を安定させ、サフランのクロシンが抗うつ・抗炎症効果を持ちます。全粒クスクスでGIを下げた現代版タジン。',ingredients:['鶏もも肉 200g','玉ねぎ 1個','にんにく 3片','トマト缶 1/2缶','グリーンオリーブ 10粒','レモン（塩漬け）1/4個','クミン 小さじ1','コリアンダー 小さじ1','シナモン 小さじ1/4','サフラン（あれば）少々','全粒粉クスクス 80g','EVオリーブオイル 大さじ1'],steps:['鶏肉に塩・スパイスをもみ込む。玉ねぎ・にんにくをオリーブオイルで炒める。','鶏肉を加えて焼き色をつけ、トマト缶・水100mlを加えて30分煮込む。','塩漬けレモン・オリーブを加えてさらに10分煮る。','クスクスを熱湯で蒸らしてオイル・塩で調味する。','クスクスの上にタジンを盛り付ける。']}
+,{id:61,emoji:'🍝',grad:'linear-gradient(135deg,#eb3349,#f45c43)',cat:'夕食',catKey:'dinner',name:'ターキーミートボール × 全粒粉パスタ × トマトソース',desc:'牛豚合挽の代わりに低脂肪ターキーを使ったヘルシーイタリアン。リコペン×全粒粉×高タンパクの組み合わせで心臓病予防と筋合成を同時に達成。',time:35,diff:'中',cal:530,dga:5,tags:['dinner','highprotein'],goalMatch:['heart','weight','energy','gut'],highlights:['リコペン高含','タンパク38g','食物繊維12g'],nut:{protein:38,carbs:62,fat:14,fiber:12,satFat:3.2,sodium:540,calcium:128,iron:5.2,vitD:22,potassium:920,omega3:0.4,vitC:68,folate:142,zinc:4.8},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:3.0,dairy:0.5,oils:1.0},dgaNote:'加熱トマトのリコペンは生トマトより生体利用率が5倍以上高く、DGA 2025-2030が推奨するリコペンの最良供給源。全粒粉パスタは精製パスタより血糖値上昇が緩やかで食物繊維・B群・ミネラルを3〜5倍含みます。',ingredients:['七面鳥ひき肉 200g','全粒粉スパゲッティ 100g','ホールトマト缶 400g','玉ねぎ 1/2個','にんにく 3片','卵 1個','パン粉 大さじ2','パルミジャーノ 大さじ3','バジル 適量','EVオリーブオイル 大さじ1','塩・こしょう 適量'],steps:['ひき肉・卵・パン粉・チーズ・塩こしょうを混ぜ、直径3cmのボール状に成形する。','フライパンでミートボールに焼き色をつけておく。','オリーブオイルでにんにく・玉ねぎを炒め、トマト缶を加えて15分煮る。','ミートボールをソースに入れてさらに15分煮込む。','全粒粉パスタとソースを合わせてバジルをのせる。']}
+,{id:62,emoji:'🫘',grad:'linear-gradient(135deg,#56ab2f,#a8e063)',cat:'昼食',catKey:'lunch',name:'フムス × ローストベジタブル × 全粒ピタ',desc:'中東発の豆ペーストはDGAが推奨する植物性タンパク・食物繊維・不飽和脂肪を同時に摂れる完全植物性ランチ。腸活×心臓病予防を一皿で。',time:25,diff:'易',cal:440,dga:5,tags:['lunch','vegetarian','highprotein'],goalMatch:['gut','heart','weight','beauty'],highlights:['食物繊維14g','植物性タンパク','タヒニ不飽和脂肪'],nut:{protein:20,carbs:58,fat:16,fiber:14,satFat:2.2,sodium:480,calcium:175,iron:6.2,vitD:0,potassium:820,omega3:0.4,vitC:72,folate:188,zinc:3.2},dgaG:{veg:3.0,fruit:0,grain:2.0,protein:2.0,dairy:0,oils:2.0},dgaNote:'ひよこ豆はDGAが豆類の中でも特に推奨する食材。腸内でプロピオン酸・酪酸を生成し、大腸の健康と体重管理に貢献します。タヒニ（ごまペースト）はカルシウム・亜鉛・マグネシウムが豊富で、ひよこ豆と組み合わせることで必須アミノ酸を補完します。',ingredients:['ひよこ豆（水煮）200g','タヒニ 大さじ3','レモン汁 大さじ2','にんにく 1片','クミン 小さじ1/2','EVオリーブオイル 大さじ2','パプリカパウダー 少々','全粒粉ピタパン 2枚','パプリカ 2個','ズッキーニ 1本','塩・こしょう 適量'],steps:['フードプロセッサーにひよこ豆・タヒニ・レモン汁・にんにく・クミン・塩を入れ滑らかになるまで撹拌する。','パプリカ・ズッキーニを一口大に切りオリーブオイル・塩こしょうで和えて220℃で20分ロースト。','ピタパンを温める。','皿にフムスを広げ、ローストベジタブルをのせ、オリーブオイルとパプリカパウダーをかける。']}
+,{id:63,emoji:'🐟',grad:'linear-gradient(135deg,#43e97b,#38f9d7)',cat:'夕食',catKey:'dinner',name:'サーモン×ほうれん草のレモンクリームパスタ',desc:'フルファットクリームチーズ×サーモンのDHA×ほうれん草の葉酸を全粒粉パスタで。DGA 2025-2030が推奨するフルファット乳製品を美味しく取り入れたディナー。',time:25,diff:'中',cal:560,dga:4,tags:['dinner','fish','highprotein'],goalMatch:['beauty','bone','heart','energy'],highlights:['DHA 2.1g','ビタミンD豊富','葉酸高含'],nut:{protein:38,carbs:58,fat:22,fiber:8,satFat:6.5,sodium:540,calcium:195,iron:4.2,vitD:420,potassium:820,omega3:2.1,vitC:42,folate:168,zinc:3.5},dgaG:{veg:2.0,fruit:0,grain:2.5,protein:3.0,dairy:1.0,oils:1.5},dgaNote:'DGA 2025-2030はフルファット乳製品を添加糖なしで積極的に摂ることを推奨（1日3サービング）。クリームチーズのCLA（共役リノール酸）は体脂肪減少・免疫増強効果が示されています。サーモンのアスタキサンチンが皮膚紫外線ダメージを防ぎます。',ingredients:['サーモン切り身 180g','全粒粉フェットチーネ 100g','ほうれん草 100g','クリームチーズ（フルファット）50g','にんにく 2片','白ワイン 50ml','レモン汁 大さじ1','EVオリーブオイル 大さじ1','塩・こしょう 適量','ディル 適量'],steps:['パスタをゆでる。サーモンに塩こしょうをしてフライパンでオイルを使って焼く。','にんにくを炒め、白ワインを加えてアルコールを飛ばす。','クリームチーズ・ゆで汁を加えてソースを作り、ほうれん草を加えてしんなりさせる。','パスタ・サーモン（崩す）・レモン汁を加えて和え、ディルをのせる。']}
+,{id:64,emoji:'🥙',grad:'linear-gradient(135deg,#667eea,#764ba2)',cat:'昼食',catKey:'lunch',name:'ギリシャ風チキン×ヨーグルトマリネ焼き × ライス',desc:'ヨーグルトマリネが鶏肉を驚くほど柔らかくする中東の知恵。フルファットヨーグルト×ハーブ×レモンで腸活×タンパク補給を同時に達成。',time:35,diff:'易',cal:490,dga:5,tags:['lunch','highprotein'],goalMatch:['bone','energy','gut','weight'],highlights:['プロバイオ×タンパク','乳酸菌マリネ','地中海ハーブ'],nut:{protein:44,carbs:42,fat:16,fiber:5,satFat:4.5,sodium:520,calcium:225,iron:3.2,vitD:28,potassium:780,omega3:0.4,vitC:22,folate:62,zinc:4.8},dgaG:{veg:1.5,fruit:0,grain:2.0,protein:3.5,dairy:1.0,oils:1.0},dgaNote:'ヨーグルトマリネは乳酸の働きで肉のタンパク質を部分的に加水分解し、消化率と柔軟性を高めます。DGA 2025-2030が推奨するフルファットヨーグルトのカルシウム・プロバイオティクス・CLA・タンパク質を最大限活用したマリネ調理法。',ingredients:['鶏胸肉 200g','フルファットヨーグルト 100g','レモン汁 大さじ1','にんにく 2片','クミン 小さじ1','オレガノ 小さじ1','パプリカパウダー 小さじ1','EVオリーブオイル 大さじ1','きゅうり 1本','ミニトマト 6個','玄米 150g'],steps:['鶏肉をヨーグルト・スパイス・レモン・にんにく・オイルに漬けて30分（または一晩）マリネする。','グリルパンまたはオーブン200℃で20〜25分焼く。','きゅうり・トマトをスライスしてサイドサラダを作る。','玄米ご飯と盛り合わせ、残ったマリネソースをかける。']}
+,{id:65,emoji:'🍲',grad:'linear-gradient(135deg,#e0c3fc,#8ec5fc)',cat:'夕食',catKey:'dinner',name:'フレンチ・ラタトゥイユ × 全粒粉パン',desc:'南フランス・プロヴァンス地方の夏野菜煮込み。7種の野菜をEVオリーブオイルで丁寧に仕上げた地中海食の真髄。リコペン×ケルセチン×ナスニンの抗酸化トリプレット。',time:45,diff:'中',cal:320,dga:5,tags:['dinner','vegetarian','lowcalorie'],goalMatch:['heart','beauty','weight','gut'],highlights:['野菜7品目','超低カロリー','リコペン×ケルセチン'],nut:{protein:10,carbs:42,fat:16,fiber:12,satFat:2.2,sodium:420,calcium:98,iron:3.5,vitD:0,potassium:1020,omega3:0.3,vitC:95,folate:112,zinc:1.8},dgaG:{veg:4.0,fruit:0,grain:1.5,protein:0.5,dairy:0,oils:2.5},dgaNote:'ラタトゥイユはDGAの野菜摂取目標を一品で超過達成できる数少ない料理。EVオリーブオイルが野菜の脂溶性ファイトケミカル（β-カロテン・リコペン・ルテイン）の吸収を最大化します。低温・長時間加熱でポリフェノールの酸化を防ぐのがポイントです。',ingredients:['なす 1本','ズッキーニ 2本','パプリカ（赤・黄）各1個','玉ねぎ 1個','トマト缶 400g','にんにく 4片','タイム 2枝','ローズマリー 1枝','EVオリーブオイル 大さじ3','塩・こしょう 適量','バジル 適量','全粒粉パン 2枚'],steps:['各野菜を2cm角に切る。','深めの鍋にオリーブオイルを熱し、玉ねぎ・にんにくを炒める。','すべての野菜・トマト缶・ハーブを加えて蓋をして30分弱火で煮込む。','塩こしょうで調味し、バジルを散らす。','全粒粉パンと盛り合わせる。']}
+,{id:66,emoji:'🫕',grad:'linear-gradient(135deg,#f7797d,#fbd3e9)',cat:'夕食',catKey:'dinner',name:'麻婆豆腐 × 玄米',desc:'四川の辛味×豆腐のイソフラボン×豚挽肉の亜鉛が融合した中国最強の豆腐料理。花椒のマヒ感が鎮痛・消炎効果をもたらす漢方食材。',time:20,diff:'中',cal:480,dga:4,tags:['dinner','highprotein'],goalMatch:['energy','bone','gut','heart'],highlights:['大豆イソフラボン','花椒抗炎症','亜鉛4.8mg'],nut:{protein:32,carbs:42,fat:20,fiber:5,satFat:5.5,sodium:820,calcium:245,iron:5.2,vitD:18,potassium:680,omega3:0.4,vitC:8,folate:72,zinc:4.8},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.5},dgaNote:'豆腐はDGA 2025-2030が乳製品代替として認めた大豆タンパク食品。木綿豆腐200gで1日のカルシウム推奨量の約25%を補給。花椒（ホアジャオ）のヒドロキシ-α-サンショオールは抗炎症・鎮痛作用が確認されており、中医学と現代栄養学が交差する地点に立つ食材です。',ingredients:['木綿豆腐 300g','豚ひき肉 100g','豆板醤 大さじ1','豆豉（トウチ）大さじ1','にんにく 2片','生姜 1かけ','長ねぎ 1/2本','鶏がらスープ 150ml','醤油 大さじ1','酒 大さじ1','ごま油 小さじ1','花椒粉 少々','片栗粉 大さじ1','玄米ご飯 150g'],steps:['豆腐を2cm角に切り塩ゆでにしておく。にんにく・生姜をみじん切りにする。','フライパンにごま油を熱し豚ひき肉を炒め、豆板醤・豆豉・にんにく・生姜を加えて炒める。','スープ・醤油・酒を加えて煮立て、豆腐を入れて3分煮る。','水溶き片栗粉でとろみをつけ、長ねぎ・花椒粉をふる。','玄米ご飯と盛り合わせる。']}
+,{id:67,emoji:'🥩',grad:'linear-gradient(135deg,#134e5e,#71b280)',cat:'夕食',catKey:'dinner',name:'青椒牛肉絲（チンジャオロース）× 玄米',desc:'ピーマンのビタミンC×牛肉のヘム鉄×たけのこの食物繊維が揃う中華炒めの定番。高温短時間でビタミンCを保持するプロの技。',time:20,diff:'中',cal:490,dga:4,tags:['dinner','highprotein'],goalMatch:['energy','bone','beauty','heart'],highlights:['ヘム鉄6.5mg','ビタミンC 95mg','亜鉛5.8mg'],nut:{protein:36,carbs:42,fat:18,fiber:6,satFat:5.2,sodium:740,calcium:72,iron:6.5,vitD:8,potassium:780,omega3:0.3,vitC:95,folate:58,zinc:5.8},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.5},dgaNote:'牛もも赤身はヘム鉄・亜鉛・ビタミンB12の優れた供給源。DGA 2025-2030は化学添加物のない赤身肉を高品質タンパク質として位置づけています。ピーマンのビタミンCは非ヘム鉄の吸収率を最大6倍向上させ、高温・短時間炒めで70%以上を保持できます。',ingredients:['牛もも肉（細切り）180g','ピーマン 4個','たけのこ（水煮）100g','にんにく 2片','生姜 1かけ','醤油 大さじ1.5','オイスターソース 大さじ1','酒 大さじ1','ごま油 小さじ1','片栗粉 大さじ1','ごま油（仕上げ）少々','玄米ご飯 150g'],steps:['牛肉を細切りにし醤油・酒・片栗粉でもみ込む。ピーマン・たけのこを細切りにする。','強火で熱したフライパンにごま油を入れ、にんにく・生姜を炒め牛肉を加えて素早く炒める。','ピーマン・たけのこを加えてさっと炒め、醤油・オイスターソースで調味する。','仕上げにごま油をひと回しかけ、玄米ご飯と盛り合わせる。']}
+,{id:68,emoji:'🐔',grad:'linear-gradient(135deg,#f2994a,#f2c94c)',cat:'昼食',catKey:'lunch',name:'棒棒鶏（バンバンジー）サラダ × 玄米',desc:'ゆで鶏のしっとりタンパク×ゴマドレッシングの不飽和脂肪×きゅうりのケイ素が揃う冷たい中華サラダ。美肌×筋合成×腸活の三拍子。',time:25,diff:'易',cal:430,dga:5,tags:['lunch','highprotein','lowcalorie'],goalMatch:['beauty','weight','energy','bone'],highlights:['ゴマリグナン美肌','タンパク40g','低カロリー'],nut:{protein:40,carbs:38,fat:14,fiber:5,satFat:2.2,sodium:580,calcium:125,iron:3.2,vitD:32,potassium:680,omega3:0.6,vitC:18,folate:52,zinc:4.2},dgaG:{veg:2.0,fruit:0,grain:2.0,protein:3.5,dairy:0,oils:1.5},dgaNote:'鶏胸肉の低温ゆで（70℃・余熱調理）はタンパク質変性を最小限にしてアミノ酸の消化吸収率を最大化します。ごまのセサミンとセサモールはリグナン系ポリフェノールで、肝機能保護・メラニン産生抑制・コレステロール低下作用が確認されています。',ingredients:['鶏胸肉 200g','きゅうり 2本','長ねぎ 適量','生姜スライス 3枚','酒 大さじ1','練りごま 大さじ2','醤油 大さじ1.5','酢 大さじ1','ごま油 小さじ1','砂糖 小さじ1','豆板醤 小さじ1/2','玄米ご飯 150g'],steps:['鶏胸肉を酒・生姜入りの水で80℃に温め、火を止めて蓋をして15分置く。','冷ましてから手で細く裂く。きゅうりを細切りにする。','練りごま・醤油・酢・ごま油・砂糖・豆板醤でタレを作る。','きゅうりを皿に敷き、鶏肉をのせてタレをかけ、ねぎを散らす。','玄米ご飯とともに盛り付ける。']}
+,{id:69,emoji:'🍜',grad:'linear-gradient(135deg,#f093fb,#f5576c)',cat:'夕食',catKey:'dinner',name:'担担麺（ごまベース・ヘルシー版）',desc:'四川の辛味担担麺をごまベースのスープで仕立てた高タンパク・腸活麺。花椒×豆板醤×練りごまの三位一体が消化・代謝・免疫を同時刺激。',time:30,diff:'中',cal:540,dga:4,tags:['dinner','highprotein'],goalMatch:['energy','gut','weight','heart'],highlights:['ゴマリグナン','花椒抗炎症','タンパク36g'],nut:{protein:36,carbs:58,fat:20,fiber:8,satFat:4.2,sodium:840,calcium:178,iron:5.5,vitD:12,potassium:720,omega3:0.8,vitC:15,folate:82,zinc:4.5},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:2.0},dgaNote:'練りごまのカルシウムは大さじ1で約120mg。DGA 2025-2030が重視するカルシウム補給に植物性食品から貢献できる重要食材です。全粒粉麺を使用することで血糖値上昇を抑制し、食物繊維でスープの栄養を腸まで届けます。',ingredients:['全粒粉中華麺（または全粒粉スパゲッティ）100g','豚ひき肉 80g','チンゲン菜 100g','練りごま 大さじ2','醤油 大さじ1.5','豆板醤 小さじ1','にんにく（すりおろし）小さじ1','鶏がらスープ 300ml','豆乳 100ml','ごま油 小さじ1','花椒粉 少々','長ねぎ 適量'],steps:['フライパンでひき肉を炒め、豆板醤・にんにく・醤油を加えて肉味噌を作る。','スープ：鶏がらスープ・豆乳・練りごまを温めて合わせる。','チンゲン菜をさっとゆでる。麺をゆでる。','丼にスープを注ぎ、麺・肉味噌・チンゲン菜をのせ、花椒・ねぎをかける。']}
+,{id:70,emoji:'🦐',grad:'linear-gradient(135deg,#f7797d,#fbd3e9)',cat:'夕食',catKey:'dinner',name:'海老のチリソース × 玄米',desc:'えびのアスタキサンチン×トマトケチャップのリコペン×長ねぎの硫化アリルが揃う中華料理の定番。低脂肪・高タンパクで美肌と免疫を同時強化。',time:20,diff:'中',cal:420,dga:4,tags:['dinner','fish','highprotein'],goalMatch:['beauty','heart','energy','weight'],highlights:['アスタキサンチン','セレン豊富','低脂肪高タンパク'],nut:{protein:34,carbs:42,fat:12,fiber:4,satFat:1.8,sodium:680,calcium:95,iron:2.8,vitD:42,potassium:620,omega3:0.6,vitC:28,folate:52,zinc:3.5},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.0},dgaNote:'えびのアスタキサンチンはビタミンEの6000倍の抗酸化力を持ち、コラーゲン産生を促進して肌の弾力を維持します。DGA 2025-2030が推奨する魚介類の中でも低カロリー・高セレン・低飽和脂肪酸の優秀食材です。',ingredients:['むきえび 200g','長ねぎ 1/2本','にんにく 2片','生姜 1かけ','トマトケチャップ 大さじ3','豆板醤 小さじ1','酒 大さじ1','鶏がらスープ 100ml','片栗粉 小さじ2','ごま油 小さじ1','塩・こしょう 適量','玄米ご飯 150g'],steps:['えびを背わたを取り塩・酒・片栗粉でもみ洗いする。','フライパンにごま油を熱し、にんにく・生姜・豆板醤を炒める。','えびを加えて炒め、ケチャップ・スープ・酒を加えてからめる。','水溶き片栗粉でとろみをつけ、長ねぎを散らし玄米ご飯と盛り合わせる。']}
+,{id:71,emoji:'🍲',grad:'linear-gradient(135deg,#89d8d3,#03c6c7)',cat:'夕食',catKey:'dinner',name:'酸辣湯（サンラータン）',desc:'お酢の有機酸×白こしょうの辛み×きくらげの食物繊維が融合した消化促進スープ。中国の伝統医学が「酸味は肝を養う」と教える発酵×辛味の傑作スープ。',time:20,diff:'易',cal:280,dga:4,tags:['dinner','lowcalorie','gut'],goalMatch:['gut','weight','energy','beauty'],highlights:['低カロリー','酢で消化促進','きくらげ食物繊維'],nut:{protein:18,carbs:28,fat:8,fiber:5,satFat:2.0,sodium:760,calcium:108,iron:3.5,vitD:22,potassium:580,omega3:0.3,vitC:12,folate:45,zinc:2.2},dgaG:{veg:2.0,fruit:0,grain:0.5,protein:1.5,dairy:0,oils:0.5},dgaNote:'きくらげはβ-グルカン・ビタミンD・鉄を豊富に含む希少な食材。乾燥きくらげを水で戻すと重量が6倍になり、食物繊維密度が飛躍的に高まります。酢のアセチルCoAが脂肪燃焼を促進し、エネルギー代謝を高めます。',ingredients:['豆腐（絹）100g','卵 2個','乾燥きくらげ 5g','たけのこ（水煮）80g','長ねぎ 適量','鶏がらスープ 500ml','酢 大さじ3','醤油 大さじ1.5','白こしょう 小さじ1','片栗粉 大さじ1.5','ごま油 小さじ1'],steps:['きくらげを水で戻して細切りにする。豆腐・たけのこを細切りにする。','スープを沸騰させ、きくらげ・たけのこ・豆腐を加えて3分煮る。','醤油・酢・白こしょうで調味する。','水溶き片栗粉でとろみをつけ、溶き卵を細く流しいれてかき混ぜる。','ごま油をたらし、ねぎを散らす。']}
+,{id:72,emoji:'🥬',grad:'linear-gradient(135deg,#43e97b,#38f9d7)',cat:'夕食',catKey:'dinner',name:'八宝菜（ハッポウサイ）× 玄米',desc:'8種の食材がひとつの鍋に集まる中国の祝い料理。えび×豚×いか×野菜の多様なタンパクと食物繊維が揃うDGA栄養多様性の完全実践。',time:25,diff:'中',cal:430,dga:5,tags:['dinner','highprotein'],goalMatch:['energy','bone','heart','gut'],highlights:['タンパク源8種','食物繊維豊富','低脂肪高栄養'],nut:{protein:30,carbs:42,fat:12,fiber:7,satFat:2.5,sodium:720,calcium:128,iron:4.2,vitD:45,potassium:820,omega3:0.8,vitC:48,folate:78,zinc:4.5},dgaG:{veg:3.0,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.0},dgaNote:'DGA 2025-2030の「タンパク質多様性」原則を一鍋で体現。えびのセレン・豚のB1・いかのタウリン・白菜のビタミンC・きくらげのβ-グルカンが相乗的に働きます。オイスターソースの微量亜鉛・鉄も見逃せない栄養源です。',ingredients:['えび 100g','豚薄切り 60g','白菜 150g','人参 60g','しいたけ 4枚','たけのこ（水煮）80g','きくらげ 10g','うずら卵 6個','オイスターソース 大さじ2','醤油 大さじ1','鶏がらスープ 200ml','片栗粉 大さじ1','ごま油 小さじ1','玄米ご飯 150g'],steps:['きくらげを水で戻す。野菜を食べやすい大きさに切る。','フライパンにごま油を熱し、豚肉・えびを炒めて一度取り出す。','野菜を硬い順に炒め、スープ・オイスターソース・醤油を加えて煮る。','えび・豚肉・うずら卵を戻し入れ、水溶き片栗粉でとろみをつける。','玄米ご飯にかける。']}
+,{id:73,emoji:'🐟',grad:'linear-gradient(135deg,#1a3a5c,#2d7dd2)',cat:'夕食',catKey:'dinner',name:'中華風蒸し魚（清蒸鱼）× 玄米',desc:'魚をそのまま蒸し上げ、熱々ごま油と醤油だれをかける広東料理の真髄。最もシンプルで栄養損失が最小の調理法でDHAを完全保持。',time:20,diff:'易',cal:390,dga:5,tags:['dinner','fish','highprotein','lowcalorie'],goalMatch:['heart','beauty','bone','weight'],highlights:['DHA・EPA完全保持','蒸しで低脂肪','セレン豊富'],nut:{protein:38,carbs:42,fat:12,fiber:3,satFat:1.8,sodium:620,calcium:88,iron:2.5,vitD:380,potassium:780,omega3:2.4,vitC:8,folate:42,zinc:3.2},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:3.5,dairy:0,oils:1.0},dgaNote:'蒸し調理はDHA・EPAを酸化させずに最大限保持できる最も優れた魚の調理法。広東料理の清蒸はDGA 2025-2030の「化学添加物なし・本物の食品」哲学と完全一致する調理スタイルです。生姜のジンゲロールが魚の腸内吸収率を高めます。',ingredients:['白身魚（鯛・スズキ等）1尾または切り身2切れ','生姜 3かけ','長ねぎ 適量','醤油 大さじ2','酒 大さじ1','砂糖 小さじ1','ごま油 大さじ2','パクチー（または三つ葉）適量','玄米ご飯 150g'],steps:['魚に塩をふり、生姜スライス・ねぎを詰めて蒸し器で8〜10分蒸す。','醤油・酒・砂糖を合わせてたれを作る。','蒸し上がった魚の上にねぎの千切りをたっぷりのせる。','フライパンでごま油を煙が出るまで熱し、ねぎの上に熱々ごま油を回しかける。','たれをかけ、パクチーを飾り玄米ご飯と盛り合わせる。']}
+,{id:74,emoji:'🍳',grad:'linear-gradient(135deg,#f6d365,#fda085)',cat:'昼食',catKey:'lunch',name:'えびと卵のやわらか炒め（滑蛋虾仁）× 玄米',desc:'広東式の卵とえびのやわらか炒め。低温・短時間調理で卵のコリンとえびのセレンを最大保持する科学的調理の极致。',time:15,diff:'中',cal:400,dga:5,tags:['lunch','fish','highprotein'],goalMatch:['beauty','energy','bone','weight'],highlights:['コリン豊富','セレン豊富','やわらか食感'],nut:{protein:34,carbs:38,fat:16,fiber:3,satFat:4.0,sodium:580,calcium:108,iron:3.2,vitD:112,potassium:580,omega3:0.5,vitC:8,folate:88,zinc:3.8},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.5},dgaNote:'卵の低温調理（65〜70℃）はコリン・ルテイン・ゼアキサンチンの生体利用率を最大化します。DGA 2025-2030は卵を完全食品として強く推奨しており、コリンは特に認知機能・神経発達・脂肪代謝に不可欠です。えびのタウリンが心臓と視力を保護します。',ingredients:['むきえび 150g','卵 4個','長ねぎ 適量','生姜 少々','塩 少々','酒 小さじ1','ごま油 小さじ1','ラード（またはバター）大さじ1','鶏がらスープ 大さじ2','玄米ご飯 150g'],steps:['えびを背わたを取って酒・塩でもみ洗いする。','卵を溶き、スープ・塩・ごま油を加えてよく混ぜる。','フライパンを弱中火で熱しラード・ごま油を入れ、えびをさっと炒めて取り出す。','卵液を流し込み、大きくゆっくりかき混ぜながら半熟状になったらえびを戻して火を止める。','玄米ご飯に盛り付けねぎをちらす。']}
+,{id:75,emoji:'🥢',grad:'linear-gradient(135deg,#c6ea8d,#fe90af)',cat:'昼食',catKey:'lunch',name:'よだれ鶏（口水鶏）',desc:'冷製蒸し鶏に四川式の複合ドレッシングをかける「よだれが出るほどうまい」という名の料理。花椒×ラー油×ごま×ねぎが食欲を刺激する四川名物。',time:30,diff:'易',cal:410,dga:4,tags:['lunch','highprotein','lowcalorie'],goalMatch:['weight','energy','beauty','heart'],highlights:['タンパク42g','花椒抗炎症','ごまリグナン'],nut:{protein:42,carbs:22,fat:18,fiber:4,satFat:3.2,sodium:640,calcium:105,iron:2.8,vitD:28,potassium:680,omega3:0.6,vitC:12,folate:45,zinc:4.2},dgaG:{veg:1.5,fruit:0,grain:0.5,protein:3.5,dairy:0,oils:2.0},dgaNote:'鶏胸肉は100gあたりタンパク質24gと脂質1.5gという理想的な比率を持つ完全タンパク源。DGA 2025-2030の「毎食タンパク質優先・1.2〜1.6g/kg」目標を最も効率的に達成できる食材です。ごまのセサミンが肝臓でのアルコール代謝を促進し、花椒のシトロネロールが消化酵素を活性化します。',ingredients:['鶏胸肉 200g','生姜スライス 3枚','酒 大さじ1','長ねぎ（薬味）適量','きゅうり 1本','醤油 大さじ2','酢 大さじ1','ごま油 大さじ1','花椒粉 小さじ1/2','ラー油 小さじ1','砂糖 小さじ1','練りごま 大さじ1','白ごま 適量'],steps:['鶏胸肉を生姜・酒入りの水で低温ゆで（80℃・15分余熱）し、冷ます。','手で一口大に裂く。きゅうりを薄切りにする。','醤油・酢・ごま油・花椒・ラー油・砂糖・練りごまでタレを作る。','皿にきゅうりを敷き鶏肉をのせ、タレをかけてねぎ・白ごまをちらす。']}
+,{id:76,emoji:'🍚',grad:'linear-gradient(135deg,#56ab2f,#a8e063)',cat:'昼食',catKey:'lunch',name:'五目玄米炒飯',desc:'玄米の全粒穀物×5種の具材でDGAの多様性原則を一皿に。高温・短時間でビタミンB群を保持する中華炒飯をヘルシーにアップグレード。',time:20,diff:'易',cal:480,dga:4,tags:['lunch','highprotein'],goalMatch:['energy','gut','weight','bone'],highlights:['全粒穀物炒飯','食物繊維6g','ビタミンB群豊富'],nut:{protein:24,carbs:62,fat:14,fiber:6,satFat:3.5,sodium:680,calcium:105,iron:3.8,vitD:55,potassium:620,omega3:0.4,vitC:22,folate:72,zinc:3.2},dgaG:{veg:2.0,fruit:0,grain:3.0,protein:2.0,dairy:0,oils:1.5},dgaNote:'玄米は白米の3倍の食物繊維と5倍以上のビタミンB1・B2・マグネシウムを含みます。炒飯に使うことで冷やご飯のレジスタントスターチが高まり、血糖値上昇を白米炒飯より30%抑制できます。DGA 2025-2030の全粒穀物推奨の実践に最適な一品です。',ingredients:['玄米（冷やご飯）300g','卵 2個','えび 80g','チャーシュー（または豚肉）60g','長ねぎ 1/2本','人参 40g','枝豆 40g','醤油 大さじ1','塩・こしょう 適量','ごま油 大さじ1'],steps:['卵を溶いておく。えび・チャーシュー・人参を小さく切る。','フライパンにごま油を強火で熱し卵を加え、ご飯を入れてパラパラになるまで炒める。','えび・チャーシュー・人参・枝豆を加えてさらに炒める。','醤油・塩こしょうで調味し長ねぎを加えてひと混ぜする。']}
+,{id:77,emoji:'🫕',grad:'linear-gradient(135deg,#e0c3fc,#9face6)',cat:'夕食',catKey:'dinner',name:'回鍋肉（ホイコーロー）× 玄米',desc:'四川発祥・豚肉とキャベツのみそ炒め。豚のビタミンB1×キャベツのビタミンU×テンメンジャンの発酵パワーが消化器系を包括的に保護。',time:25,diff:'中',cal:510,dga:3,tags:['dinner','highprotein'],goalMatch:['energy','gut','weight','bone'],highlights:['ビタミンB1豊富','発酵テンメンジャン','キャベツビタミンU'],nut:{protein:30,carbs:44,fat:22,fiber:6,satFat:7.2,sodium:780,calcium:88,iron:3.2,vitD:10,potassium:680,omega3:0.4,vitC:55,folate:72,zinc:4.2},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.5},dgaNote:'テンメンジャン（甜麺醤）は小麦・大豆を発酵させた中国版みそ。プロバイオティクス・グルタミン酸・ペプチドが腸内環境を整えます。豚バラは一度ゆでてから冷やし表面脂を除く「回鍋（ゆで戻し）」の工程で飽和脂肪を削減するのが本来の技法です。',ingredients:['豚バラかたまり 180g','キャベツ 200g','ピーマン 2個','長ねぎ 1/2本','にんにく 2片','生姜 1かけ','テンメンジャン 大さじ1.5','豆板醤 小さじ1','醤油 小さじ1','ごま油 小さじ1','玄米ご飯 150g'],steps:['豚バラを塊のまま20分下ゆでし、冷蔵庫で冷やして5mm厚にスライスする。','キャベツ・ピーマンをひと口大に切る。','フライパンにごま油を熱し豚肉を炒め、テンメンジャン・豆板醤を加えて炒める。','野菜を加えてさっと炒め、醤油で調味する。','玄米ご飯と盛り合わせる。']}
+,{id:78,emoji:'🍵',grad:'linear-gradient(135deg,#d4fc79,#96e6a1)',cat:'朝食',catKey:'breakfast',name:'中華粥（鶏×生姜×干し椎茸）',desc:'胃腸を優しくいたわる中国の養生粥。干し椎茸のβ-グルカン×生姜の消化促進×鶏肉のタンパクが弱った体をゆっくり回復させる伝統の滋養食。',time:40,diff:'易',cal:320,dga:4,tags:['breakfast','lowcalorie','gut'],goalMatch:['gut','energy','bone','weight'],highlights:['β-グルカン免疫','生姜消化促進','胃腸にやさしい'],nut:{protein:22,carbs:48,fat:6,fiber:5,satFat:1.5,sodium:580,calcium:88,iron:3.2,vitD:22,potassium:580,omega3:0.3,vitC:5,folate:45,zinc:2.8},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:2.0,dairy:0,oils:0.5},dgaNote:'粥（おかゆ）は穀物のデンプンが完全に糊化し消化率がほぼ100%になる調理法。胃腸が弱っているときや運動後の回復食として中医学と現代栄養学の両方が推奨します。干し椎茸のレンチナン（β-グルカン）はNK細胞・マクロファージを活性化し自然免疫を強化します。',ingredients:['玄米（または白米）80g','鶏もも肉 80g','干し椎茸 3枚','生姜 2かけ','水 800ml','醤油 小さじ1','塩 少々','白ごま 少々','ごま油 少々','長ねぎ 適量'],steps:['干し椎茸を水で戻し（戻し汁も使う）、薄切りにする。','米を洗い水・戻し汁・鶏肉・生姜スライスを鍋に入れて強火にかける。','沸騰したら弱火にして40〜50分ゆっくり煮る。','鶏肉を取り出して細かく裂いて戻す。塩・醤油で調味する。','器に盛りごま油・白ごま・ねぎをかける。']}
+,{id:79,emoji:'🥗',grad:'linear-gradient(135deg,#a8edea,#fed6e3)',cat:'昼食',catKey:'lunch',name:'拌三絲（バンサンスー）野菜の和え物',desc:'きゅうり・人参・春雨の三絲（三色の千切り）を和えた中国の前菜サラダ。ごま油×酢×生姜のシンプルな調味で野菜の栄養を最大限活かす。',time:15,diff:'易',cal:250,dga:4,tags:['lunch','vegetarian','lowcalorie'],goalMatch:['beauty','weight','gut','heart'],highlights:['超低カロリー','β-カロテン豊富','消化促進'],nut:{protein:8,carbs:38,fat:8,fiber:5,satFat:1.0,sodium:480,calcium:48,iron:1.8,vitD:0,potassium:420,omega3:0.2,vitC:18,folate:35,zinc:1.0},dgaG:{veg:2.0,fruit:0,grain:1.0,protein:0.5,dairy:0,oils:1.0},dgaNote:'中国の前菜文化は食事の冒頭に消化酵素の分泌を促す食材を摂るという中医学の知恵に基づきます。酢のアセチルCoAが代謝を高め、生姜のプロテアーゼが後続のタンパク質消化を助けます。緑・橙・透明の三色が「目で食べる」視覚的な食欲を呼び起こします。',ingredients:['きゅうり 2本','人参 1本','緑豆春雨 50g','ごま油 大さじ1','酢 大さじ1.5','醤油 大さじ1','砂糖 小さじ1','おろし生姜 小さじ1','白ごま 大さじ1','ラー油（お好みで）少々'],steps:['春雨を熱湯で戻して冷水でしめ、食べやすい長さに切る。','きゅうりを千切り、人参を千切りにする。','調味料（ごま油・酢・醤油・砂糖・生姜）を合わせてドレッシングを作る。','春雨・きゅうり・人参を和え、白ごまをふる。']}
+,{id:80,emoji:'🥩',grad:'linear-gradient(135deg,#f77062,#fe5196)',cat:'夕食',catKey:'dinner',name:'牛肉のブラックペッパー炒め × 玄米',desc:'香港風の黒こしょう炒め。牛肉のヘム鉄×パイペリン（黒こしょう）のターメリック吸収増強×ピーマンのビタミンCが鉄吸収を最大化する本格中華。',time:20,diff:'中',cal:520,dga:4,tags:['dinner','highprotein'],goalMatch:['energy','bone','heart','weight'],highlights:['ヘム鉄7.2mg','ピペリン吸収増強','亜鉛6.5mg'],nut:{protein:38,carbs:44,fat:20,fiber:5,satFat:6.8,sodium:720,calcium:72,iron:7.2,vitD:8,potassium:880,omega3:0.4,vitC:68,folate:62,zinc:6.5},dgaG:{veg:2.0,fruit:0,grain:2.5,protein:3.5,dairy:0,oils:1.5},dgaNote:'黒こしょうのピペリンはクルクミンの吸収率を2000%向上させ、非ヘム鉄の吸収も促進します。DGA 2025-2030が推奨する添加物なし・塩分適切な赤身肉調理の手本。オイスターソースの亜鉛・牛肉の亜鉛が合わさり、免疫系と傷の修復を強力にサポートします。',ingredients:['牛もも肉（薄切り）180g','ピーマン（赤・緑）各1個','玉ねぎ 1/2個','にんにく 2片','粗挽き黒こしょう 小さじ1.5','オイスターソース 大さじ1.5','醤油 大さじ1','酒 大さじ1','砂糖 小さじ1','ごま油 小さじ1','片栗粉 小さじ2','玄米ご飯 150g'],steps:['牛肉を醤油・酒・片栗粉・黒こしょう半量でもみ込む。野菜を一口大に切る。','強火で熱したフライパンにごま油を入れ、にんにくを炒めて牛肉を加えて炒める。','玉ねぎ・ピーマンを加えてさっと炒め、オイスターソース・砂糖・残りの黒こしょうで調味する。','玄米ご飯と盛り合わせる。']}
+,{id:81,emoji:'🐷',grad:'linear-gradient(135deg,#fccb90,#d57eeb)',cat:'夕食',catKey:'dinner',name:'豆腐と挽肉の蒸し物（蒸肉豆腐）× 玄米',desc:'豆腐に豚挽肉・卵を混ぜて蒸し上げた広東式の家庭料理。やわらかい食感でタンパク質を最大効率で補給できる消化吸収最優先の一品。',time:30,diff:'易',cal:420,dga:5,tags:['dinner','highprotein'],goalMatch:['bone','energy','gut','beauty'],highlights:['消化吸収率高','大豆×動物タンパク','イソフラボン'],nut:{protein:32,carbs:34,fat:18,fiber:4,satFat:4.5,sodium:620,calcium:255,iron:4.8,vitD:45,potassium:680,omega3:0.5,vitC:8,folate:68,zinc:4.2},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.0},dgaNote:'豆腐と豚ひき肉の組み合わせは植物性・動物性タンパク質の相補性を最大化します。大豆アミノ酸（メチオニン少）と豚肉アミノ酸（メチオニン豊富）が補い合い、アミノ酸スコアを100に近づけます。蒸し調理でタンパク質の熱変性を最小限に抑えます。',ingredients:['木綿豆腐 250g','豚ひき肉 100g','卵 1個','生姜 少々','長ねぎ 適量','醤油 大さじ1.5','オイスターソース 大さじ1','ごま油 小さじ1','片栗粉 大さじ1','塩・こしょう 少々','玄米ご飯 150g'],steps:['豆腐を水切りしてフォークで崩す。','豆腐・豚ひき肉・卵・生姜・調味料を混ぜてよくこねる。','耐熱皿に移し、蒸し器で15〜18分蒸す。','ねぎを散らし、熱々ごま油をかける。','玄米ご飯と盛り合わせる。']}
+,{id:82,emoji:'🦐',grad:'linear-gradient(135deg,#0f3460,#533483)',cat:'夕食',catKey:'dinner',name:'えびとブロッコリーのオイスター炒め × 玄米',desc:'えびのアスタキサンチン×ブロッコリーのスルフォラファン×オイスターソースの亜鉛が融合した栄養密度極限の炒め物。10分で完成するDGA準拠の時短ディナー。',time:15,diff:'易',cal:390,dga:5,tags:['dinner','fish','highprotein','lowcalorie'],goalMatch:['beauty','energy','bone','heart'],highlights:['スルフォラファン','アスタキサンチン','10分時短'],nut:{protein:32,carbs:38,fat:10,fiber:6,satFat:1.5,sodium:640,calcium:115,iron:3.5,vitD:42,potassium:720,omega3:0.5,vitC:112,folate:105,zinc:3.8},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.0},dgaNote:'ブロッコリーのスルフォラファンは60〜70℃の短時間炒めで生体利用率が最大化されます（高温すぎると分解）。えびのアスタキサンチン・セレン・タウリンとブロッコリーのビタミンC・K・葉酸が相乗的に働き、DGA 2025-2030の「本物の食品」を象徴する一皿です。',ingredients:['むきえび 180g','ブロッコリー 250g','にんにく 2片','生姜 1かけ','オイスターソース 大さじ2','醤油 小さじ1','酒 大さじ1','鶏がらスープ 50ml','片栗粉 小さじ1','ごま油 小さじ1','玄米ご飯 150g'],steps:['えびを背わたを取り酒・塩でもみ洗いする。ブロッコリーを小房に分ける。','ブロッコリーを塩ゆでにして水気を切る。','フライパンにごま油を熱し、にんにく・生姜を炒めてえびを加える。','ブロッコリーを加え、オイスターソース・醤油・スープを加えて絡める。水溶き片栗粉でとろみをつける。','玄米ご飯と盛り合わせる。']}
+,{id:83,emoji:'🍜',grad:'linear-gradient(135deg,#43cea2,#185a9d)',cat:'夕食',catKey:'dinner',name:'海鮮春雨炒め（炒粉絲）× 玄米',desc:'春雨のビーフン×えび×いか×野菜を中華スパイスで炒めたガラスヌードル炒め。低GIの緑豆春雨がゆっくりエネルギーを放出し腹持ち抜群。',time:20,diff:'中',cal:400,dga:4,tags:['dinner','fish','lowcalorie'],goalMatch:['weight','energy','gut','heart'],highlights:['低GI緑豆春雨','海鮮たっぷり','食物繊維豊富'],nut:{protein:26,carbs:48,fat:10,fiber:6,satFat:1.8,sodium:680,calcium:105,iron:3.2,vitD:35,potassium:680,omega3:0.8,vitC:35,folate:68,zinc:3.0},dgaG:{veg:2.5,fruit:0,grain:1.5,protein:2.5,dairy:0,oils:1.0},dgaNote:'緑豆春雨はGI値が25〜30と極めて低く、血糖値を穏やかに上昇させます。DGA 2025-2030が推奨する精製炭水化物の代替として最適な食材。緑豆のオリゴ糖がビフィズス菌を増殖させ、腸内環境を整えます。',ingredients:['緑豆春雨 80g','むきえび 100g','いか 80g','白菜 120g','人参 40g','にら 30g','にんにく 2片','オイスターソース 大さじ1.5','醤油 大さじ1','鶏がらスープ 100ml','ごま油 小さじ1','玄米ご飯 100g'],steps:['春雨を水で戻す。えび・いかを一口大に切る。野菜を食べやすい大きさに切る。','フライパンにごま油を熱し、にんにく・えび・いかを炒める。','野菜・春雨・スープを加えて炒め煮にする。','オイスターソース・醤油で調味し、にらを加えてさっと炒める。','玄米ご飯と盛り合わせる。']}
+,{id:84,emoji:'🌿',grad:'linear-gradient(135deg,#1a1a2e,#16213e)',cat:'夕食',catKey:'dinner',name:'鶏手羽元とクコの実のスープ（薬膳）',desc:'中医学の長寿薬膳スープ。クコのゼアキサンチン×手羽元のコラーゲン×生姜の体温上昇作用が揃う中国伝統の免疫強化・美肌・視力保護スープ。',time:60,diff:'易',cal:340,dga:4,tags:['dinner','gut','lowcalorie'],goalMatch:['beauty','bone','energy','heart'],highlights:['コラーゲン豊富','クコゼアキサンチン','免疫強化'],nut:{protein:28,carbs:28,fat:12,fiber:4,satFat:3.2,sodium:560,calcium:105,iron:3.2,vitD:18,potassium:680,omega3:0.3,vitC:18,folate:42,zinc:3.5},dgaG:{veg:1.5,fruit:0.5,grain:1.0,protein:2.5,dairy:0,oils:0.5},dgaNote:'クコの実（枸杞子）はゼアキサンチン・ベタイン・多糖類を含む中医学の長寿食材。現代研究でもNK細胞活性化・肝保護・血糖調節効果が確認されています。手羽元の長時間加熱でコラーゲンがゼラチンに変換され、腸粘膜を修復します。',ingredients:['鶏手羽元 6本','クコの実 大さじ2','干し椎茸 4枚','生姜 3かけ','なつめ（あれば）3個','水 1000ml','塩 少々','酒 大さじ2','長ねぎ 適量','玄米ご飯 150g'],steps:['手羽元を熱湯でさっと霜降りにする。干し椎茸を水で戻す。','鍋に水・酒・手羽元・椎茸・生姜・なつめを入れて強火にかける。','沸騰したらアクを取り、弱火で45〜50分煮込む。','クコの実を加えてさらに5分煮る。','塩で調味し、ねぎを散らして玄米ご飯と盛り合わせる。']}
+,{id:85,emoji:'🥬',grad:'linear-gradient(135deg,#96fbc4,#f9f586)',cat:'昼食',catKey:'lunch',name:'三色野菜の中華炒め × 玄米',desc:'ピーマン×人参×たけのこの三色炒めはDGAの「多様な色の野菜」を最もシンプルに実践する中国家庭料理。高温・短時間でビタミンを最大保持。',time:15,diff:'易',cal:320,dga:5,tags:['lunch','vegetarian','lowcalorie'],goalMatch:['beauty','weight','gut','heart'],highlights:['ビタミンC 110mg','β-カロテン豊富','低カロリー'],nut:{protein:10,carbs:42,fat:10,fiber:8,satFat:1.5,sodium:560,calcium:68,iron:2.8,vitD:0,potassium:680,omega3:0.2,vitC:110,folate:72,zinc:1.5},dgaG:{veg:3.0,fruit:0,grain:2.5,protein:0.5,dairy:0,oils:1.0},dgaNote:'緑・橙・白の三色野菜はそれぞれクロロフィル（代謝促進）・β-カロテン（粘膜保護）・イヌリン（腸活）という異なるファイトケミカルを供給します。中国の五行栄養学では「五色の食材を摂ることが臓腑を養う」とされ、現代のDGA「多様な色の野菜」推奨と完全一致します。',ingredients:['ピーマン（緑・赤）各2個','人参 1本','たけのこ（水煮）120g','にんにく 2片','生姜 少々','オイスターソース 大さじ1','醤油 小さじ1','塩・こしょう 少々','ごま油 大さじ1','玄米ご飯 150g'],steps:['ピーマン・人参・たけのこを細切りにする。','フライパンにごま油を強火で熱し、にんにく・生姜を炒める。','人参→たけのこ→ピーマンの順に加えて高温短時間で炒める。','オイスターソース・醤油で調味し、玄米ご飯と盛り合わせる。']}
+,{id:86,emoji:'🍳',grad:'linear-gradient(135deg,#f6d365,#fda085)',cat:'朝食',catKey:'breakfast',name:'トマトと卵の中華炒め × 玄米',desc:'中国の家庭料理ナンバーワン。加熱トマトのリコペン×卵のコリン×ごま油の不飽和脂肪酸が揃うシンプルで完璧な朝食。5分で作れる中国版TKG。',time:10,diff:'易',cal:360,dga:4,tags:['breakfast','highprotein','lowcalorie'],goalMatch:['beauty','energy','heart','weight'],highlights:['リコペン高含','コリン豊富','5分で完成'],nut:{protein:20,carbs:38,fat:14,fiber:4,satFat:3.5,sodium:540,calcium:95,iron:3.2,vitD:88,potassium:620,omega3:0.4,vitC:32,folate:82,zinc:2.5},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:1.5,dairy:0,oils:1.0},dgaNote:'トマトを加熱することでリコペンの生体利用率が5倍以上向上します。DGA 2025-2030が強調する「本物の食品」の組み合わせの中で最もシンプルかつ栄養密度が高い一例。卵のコリン・ルテイン・ゼアキサンチンが脳・目・肝臓を同時に保護します。',ingredients:['卵 3個','トマト（大）1個','長ねぎ 適量','塩 少々','砂糖 少々','ごま油 大さじ1','玄米ご飯 150g'],steps:['卵をよく溶き塩少々を混ぜる。トマトを乱切りにする。','フライパンにごま油を熱し、卵を入れてふわっと炒め一度取り出す。','同じフライパンでトマトを炒め、砂糖・塩で調味する。','卵を戻してさっと混ぜ、ねぎを散らす。','玄米ご飯と盛り合わせる。']}
+,{id:87,emoji:'🌰',grad:'linear-gradient(135deg,#f7971e,#ffd200)',cat:'夕食',catKey:'dinner',name:'鶏と栗のブレイズ（板栗焼鶏）× 玄米',desc:'秋の滋養食・栗と鶏肉の中国式炒め煮。栗のビタミンC×鶏肉のタンパク×醤油の旨みが融合した中国の伝統的な秋の養生料理。',time:40,diff:'中',cal:490,dga:4,tags:['dinner','highprotein'],goalMatch:['energy','bone','gut','heart'],highlights:['栗ビタミンC豊富','食物繊維8g','秋の養生食'],nut:{protein:32,carbs:54,fat:14,fiber:8,satFat:3.2,sodium:680,calcium:78,iron:3.5,vitD:22,potassium:820,omega3:0.4,vitC:38,folate:62,zinc:3.8},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.0},dgaNote:'栗は果物の中で唯一デンプンを主成分とし、ビタミンC・葉酸・カリウム・食物繊維を高濃度で含む独特の食材。中医学では「腎を補い脾を強める」とされ、筋肉・腎臓・消化器系の強化に長年使用されてきました。現代栄養学的にも栗のタンニンが腸内環境を改善することが確認されています。',ingredients:['鶏もも肉 200g','栗（むき・下ゆで済み）150g','長ねぎ 1/2本','生姜 2かけ','にんにく 2片','醤油 大さじ2','みりん 大さじ1','酒 大さじ2','砂糖 小さじ1','鶏がらスープ 150ml','ごま油 小さじ1','玄米ご飯 150g'],steps:['鶏肉を一口大に切り、フライパンでごま油を使って焼き色をつける。','にんにく・生姜・ねぎを加えて炒め、酒を加えてアルコールを飛ばす。','醤油・みりん・砂糖・スープを加えて栗とともに蓋をして20分煮込む。','煮汁が少なくなったら火を止め、玄米ご飯と盛り合わせる。']}
+,{id:88,emoji:'🥦',grad:'linear-gradient(135deg,#11998e,#38ef7d)',cat:'夕食',catKey:'dinner',name:'豆腐と卵の家常煮込み（家常豆腐）× 玄米',desc:'中国の家庭料理の王道・豆腐と卵の煮込み。シンプルな食材でイソフラボン×コリン×プロバイオティクス調味料を組み合わせた安価・高栄養の一品。',time:20,diff:'易',cal:380,dga:5,tags:['dinner','vegetarian','highprotein'],goalMatch:['bone','gut','energy','beauty'],highlights:['イソフラボン豊富','コリン高含','発酵調味料'],nut:{protein:24,carbs:36,fat:16,fiber:4,satFat:3.8,sodium:680,calcium:255,iron:5.2,vitD:55,potassium:580,omega3:0.4,vitC:8,folate:72,zinc:3.0},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.5},dgaNote:'豆腐のイソフラボン（ゲニステイン・ダイゼイン）は腸内細菌によってエクオールに変換され、骨密度維持・更年期症状緩和・LDL低下効果を発揮します。DGA 2025-2030は大豆製品を乳製品代替として積極的に推奨しています。卵のコリンとの組み合わせで神経機能をサポートします。',ingredients:['木綿豆腐 250g','卵 2個','長ねぎ 1/2本','にんにく 2片','生姜 少々','豆板醤 小さじ1','醤油 大さじ1.5','みりん 大さじ1','鶏がらスープ 100ml','片栗粉 小さじ1','ごま油 小さじ1','玄米ご飯 150g'],steps:['豆腐を厚さ1cmに切り、フライパンで両面焼き色をつける。','卵をゆで卵にして半分に切る（またはスクランブルエッグにする）。','にんにく・生姜・豆板醤を炒め、スープ・醤油・みりんを加えて豆腐・卵を煮る。','水溶き片栗粉でとろみをつけ、ごま油・ねぎをかける。','玄米ご飯と盛り合わせる。']}
+,{id:89,emoji:'🥟',grad:'linear-gradient(135deg,#667eea,#764ba2)',cat:'夕食',catKey:'dinner',name:'海老ワンタンスープ',desc:'ぷりぷりえびのワンタンを透き通ったスープで仕上げる広東料理の真髄。コラーゲン×えびのセレン×しょうがの消化促進が体を内側から整えるスープ。',time:30,diff:'中',cal:340,dga:4,tags:['dinner','fish','lowcalorie'],goalMatch:['beauty','weight','gut','bone'],highlights:['コラーゲン','セレン豊富','低カロリー'],nut:{protein:24,carbs:38,fat:8,fiber:3,satFat:1.8,sodium:740,calcium:88,iron:2.5,vitD:42,potassium:520,omega3:0.5,vitC:8,folate:42,zinc:2.8},dgaG:{veg:1.5,fruit:0,grain:1.5,protein:2.5,dairy:0,oils:0.5},dgaNote:'えびのアスタキサンチンとセレンを薄皮のワンタン皮で包んで蒸すことで、栄養素の溶出を最小限に抑えながらスープにうま味を移す広東料理の知恵。清湯（澄んだスープ）は過度な塩分を使わなくても旨みの豊かな食事を実現するDGA 2025-2030の減塩調理の模範例です。',ingredients:['むきえび 150g','ワンタンの皮 15枚','豚ひき肉 50g','チンゲン菜 2株','長ねぎ 適量','生姜 少々','醤油 大さじ1','ごま油 小さじ1','塩・こしょう 少々','鶏がらスープ 600ml'],steps:['えびをみじん切りにし豚ひき肉・生姜・醤油・塩こしょうと混ぜてタネを作る。','ワンタンの皮にタネを包む。','スープを温めワンタンを5〜6分ゆでる。チンゲン菜を加えてさっと煮る。','器に盛りごま油・ねぎをかける。']}
+,{id:90,emoji:'🌱',grad:'linear-gradient(135deg,#96e6a1,#d4fc79)',cat:'昼食',catKey:'lunch',name:'春雨と野菜の中華サラダ × 玄米',desc:'低GI緑豆春雨×5種の野菜×ごま酢ドレッシングのヘルシー中華サラダ。食物繊維とポリフェノールをたっぷり摂れる低カロリーランチ。',time:15,diff:'易',cal:290,dga:5,tags:['lunch','vegetarian','lowcalorie'],goalMatch:['weight','beauty','gut','heart'],highlights:['低GI','ポリフェノール豊富','低カロリー'],nut:{protein:8,carbs:44,fat:8,fiber:7,satFat:1.0,sodium:480,calcium:68,iron:2.2,vitD:0,potassium:580,omega3:0.2,vitC:48,folate:62,zinc:1.2},dgaG:{veg:3.0,fruit:0,grain:1.5,protein:0.5,dairy:0,oils:1.0},dgaNote:'緑豆春雨のGI値は約25で精製小麦麺（70〜80）の約3分の1。血糖値を緩やかに上昇させ、DGA 2025-2030の「精製炭水化物の大幅削減」を実践できる麺代替食材です。5種の野菜が異なる色のファイトケミカルを供給し、腸内フローラの多様性を維持します。',ingredients:['緑豆春雨 60g','きゅうり 1本','人参 1/2本','もやし 80g','小松菜 60g','乾燥きくらげ 5g','練りごま 大さじ1','醤油 大さじ1.5','酢 大さじ1.5','砂糖 小さじ1','ごま油 小さじ1','ラー油 少々','玄米ご飯 100g'],steps:['春雨・きくらげを水で戻す。もやし・小松菜をさっとゆでる。','きゅうり・人参を千切りにする。','ドレッシング（練りごま・醤油・酢・砂糖・ごま油・ラー油）を作る。','すべての材料を合わせてドレッシングで和える。','玄米ご飯を添える。']}
+,{id:91,emoji:'🥗',grad:'linear-gradient(135deg,#f093fb,#f5576c)',cat:'昼食',catKey:'lunch',name:'中華風冷しゃぶ × 黒酢ドレッシング',desc:'豚しゃぶを黒酢×生姜×ごま油の中華ドレッシングで食べるフュージョン料理。黒酢のアミノ酸×生姜のショウガオール×豚B1が代謝を最大活性化。',time:20,diff:'易',cal:370,dga:4,tags:['lunch','highprotein','lowcalorie'],goalMatch:['weight','energy','beauty','heart'],highlights:['黒酢アミノ酸','ビタミンB1豊富','低カロリー'],nut:{protein:30,carbs:28,fat:14,fiber:5,satFat:4.5,sodium:580,calcium:72,iron:2.5,vitD:10,potassium:680,omega3:0.3,vitC:48,folate:62,zinc:3.2},dgaG:{veg:2.5,fruit:0,grain:0.5,protein:2.5,dairy:0,oils:1.5},dgaNote:'黒酢は通常の米酢より17種のアミノ酸・クエン酸・リンゴ酸・コハク酸を豊富に含み、基礎代謝向上・疲労回復・血圧降下作用が確認されています。ビタミンB1が豊富な豚ロースと組み合わせることで、乳酸分解を促進して疲労を効果的に回復させます。',ingredients:['豚ロース薄切り 150g','水菜 80g','もやし 80g','きゅうり 1本','長ねぎ 適量','黒酢 大さじ2','醤油 大さじ1.5','砂糖 小さじ1','おろし生姜 小さじ1','ごま油 大さじ1','白ごま 大さじ1'],steps:['豚肉をしゃぶしゃぶして冷水で締める。もやしをさっとゆでる。','きゅうりを千切り、ねぎを小口切りにする。','黒酢ドレッシングを作る。','皿に野菜を敷き豚肉をのせ、ドレッシングをかけて白ごまをふる。']}
+,{id:92,emoji:'🫘',grad:'linear-gradient(135deg,#4facfe,#00f2fe)',cat:'夕食',catKey:'dinner',name:'麻辣野菜の水煮（水煮蔬菜）× 玄米',desc:'四川の「水煮」スタイルを野菜中心にヘルシー化。花椒×唐辛子×にんにくの麻辣ソースが野菜の栄養を最大限引き出す四川式デトックス鍋。',time:20,diff:'中',cal:310,dga:5,tags:['dinner','vegetarian','lowcalorie'],goalMatch:['weight','gut','heart','beauty'],highlights:['花椒抗炎症','低カロリー','野菜5品目'],nut:{protein:14,carbs:36,fat:12,fiber:9,satFat:1.8,sodium:620,calcium:145,iron:4.5,vitD:0,potassium:820,omega3:0.3,vitC:78,folate:108,zinc:2.0},dgaG:{veg:4.0,fruit:0,grain:1.5,protein:1.5,dairy:0,oils:1.5},dgaNote:'四川の水煮料理は野菜をスープで煮てから辣油・花椒をかけるシンプルな調理法で、野菜の水溶性ビタミンをスープごと摂取できます。DGA 2025-2030が強調する「本物の食品・超加工食品を避ける」を実践した最もピュアな野菜料理の一形態です。',ingredients:['豆腐 150g','もやし 100g','白菜 150g','きのこ（しめじ・えのき）100g','ほうれん草 60g','にんにく 3片','唐辛子 2本','花椒 小さじ1','ごま油 大さじ2','醤油 大さじ1.5','鶏がらスープ 300ml','玄米ご飯 150g'],steps:['野菜・豆腐を食べやすく切る。にんにくをみじん切りにする。','スープで野菜・豆腐を煮て器に盛る。','フライパンにごま油を熱し、唐辛子・花椒・にんにくを炒めて辣油を作る。','野菜の上に熱々の辣油を回しかけ、醤油をたらす。','玄米ご飯と盛り合わせる。']}
+,{id:93,emoji:'🐟',grad:'linear-gradient(135deg,#1a3a5c,#2d7dd2)',cat:'昼食',catKey:'lunch',name:'鮭と豆腐の中華塩炒め × 玄米',desc:'鮭のアスタキサンチン×豆腐のイソフラボン×生姜の抗炎症成分をシンプルな塩炒めで仕上げる。余分な調味料を使わない「本物の食品」の極致。',time:20,diff:'易',cal:420,dga:5,tags:['lunch','fish','highprotein'],goalMatch:['beauty','heart','bone','energy'],highlights:['アスタキサンチン','イソフラボン','塩のみシンプル'],nut:{protein:36,carbs:36,fat:16,fiber:4,satFat:2.8,sodium:580,calcium:235,iron:3.5,vitD:420,potassium:780,omega3:2.4,vitC:12,folate:58,zinc:3.8},dgaG:{veg:1.5,fruit:0,grain:2.5,protein:3.5,dairy:0,oils:1.0},dgaNote:'塩のみで調味することで食材本来の旨みを最大化し、過剰な添加物・化学調味料を完全に排除。DGA 2025-2030の「本物の食品」哲学の実践例。鮭のアスタキサンチン（脂溶性）と豆腐のイソフラボンが女性ホルモン様作用で肌のコラーゲン産生を促進します。',ingredients:['生鮭切り身 150g','木綿豆腐 200g','長ねぎ 1/2本','生姜 1かけ','にんにく 1片','塩 小さじ1/2','酒 大さじ1','ごま油 大さじ1','白ごま 少々','玄米ご飯 150g'],steps:['豆腐を水切りして2cm角に切る。鮭を一口大に切る。','フライパンにごま油を熱し、にんにく・生姜を炒める。','鮭を加えて焼き色をつけ、豆腐を加えてさっと炒める。','酒・塩で調味し、長ねぎを加えてひと混ぜ。白ごまをふる。','玄米ご飯と盛り合わせる。']}
+,{id:94,emoji:'🥩',grad:'linear-gradient(135deg,#e0c3fc,#8ec5fc)',cat:'夕食',catKey:'dinner',name:'豚バラと大根の中華煮込み × 玄米',desc:'豚の旨味が染みた大根の滋味深い煮込み。豚のB1×大根のジアスターゼ×ごま油の不飽和脂肪が消化代謝を総合的にサポートする中国家庭料理。',time:50,diff:'中',cal:470,dga:3,tags:['dinner','highprotein'],goalMatch:['energy','gut','bone','weight'],highlights:['コラーゲン源','大根消化酵素','骨まで食べる'],nut:{protein:26,carbs:46,fat:18,fiber:6,satFat:6.5,sodium:720,calcium:78,iron:2.8,vitD:8,potassium:780,omega3:0.3,vitC:22,folate:42,zinc:3.2},dgaG:{veg:2.0,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.0},dgaNote:'豚バラは一度ゆでて表面の脂を取り除く下処理でDGA基準内に収められます。大根のジアスターゼ（アミラーゼ）は消化を促進し、イソチオシアネートが発がん物質を解毒します。長時間加熱で生成されるゼラチン・コラーゲンペプチドが腸粘膜を修復します。',ingredients:['豚バラかたまり 200g','大根 400g','長ねぎ（青い部分）1本分','生姜 3かけ','醤油 大さじ2','オイスターソース 大さじ1','酒 大さじ2','砂糖 小さじ2','鶏がらスープ 300ml','ごま油 小さじ1','玄米ご飯 150g'],steps:['豚バラを熱湯で15分下ゆでし、4cm角に切る。','大根を3cm厚の輪切りにして面取りし、米ぬか入りの水で下ゆでする。','鍋に豚肉・大根・スープ・調味料・ねぎ・生姜を入れて40分煮込む。','ごま油で仕上げ、玄米ご飯と盛り合わせる。']}
+,{id:95,emoji:'🫚',grad:'linear-gradient(135deg,#f8b500,#e65c00)',cat:'夕食',catKey:'dinner',name:'鶏と野菜のオイスターソース炒め × 玄米',desc:'広東料理の定番・オイスターソース炒め。牡蠣由来の濃厚旨味成分が少量で深い味を生み出し、塩分を抑えながらDGA栄養基準を達成する省塩調理の知恵。',time:15,diff:'易',cal:440,dga:5,tags:['dinner','highprotein','lowcalorie'],goalMatch:['energy','weight','gut','bone'],highlights:['オイスター亜鉛','高タンパク低脂肪','省塩調理'],nut:{protein:38,carbs:40,fat:12,fiber:6,satFat:2.2,sodium:640,calcium:88,iron:3.8,vitD:28,potassium:820,omega3:0.4,vitC:68,folate:82,zinc:4.5},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:3.0,dairy:0,oils:1.0},dgaNote:'オイスターソースの旨味成分（グルタミン酸・イノシン酸）は少量で満足感のある塩味を生み出し、DGA 2025-2030の目標ナトリウム2300mg/日以内の達成を助けます。鶏もも肉のナイアシンは脂肪代謝の補酵素として働き、エネルギー産生を高めます。',ingredients:['鶏もも肉（皮なし）200g','ブロッコリー 150g','パプリカ（赤）1個','しいたけ 4枚','にんにく 2片','オイスターソース 大さじ2','醤油 小さじ1','酒 大さじ1','ごま油 小さじ1','片栗粉 小さじ1','玄米ご飯 150g'],steps:['鶏肉を一口大に切り片栗粉をまぶす。ブロッコリーを塩ゆでにする。','フライパンにごま油を熱し鶏肉を炒め、にんにく・しいたけを加えて炒める。','ブロッコリー・パプリカを加え、オイスターソース・醤油・酒で調味する。','玄米ご飯と盛り合わせる。']}
+,{id:96,emoji:'🐟',grad:'linear-gradient(135deg,#89f7fe,#66a6ff)',cat:'夕食',catKey:'dinner',name:'白身魚の豆豉蒸し × 玄米',desc:'豆豉（発酵黒豆）の深い旨味で蒸した広東式魚料理。豆豉のプロバイオティクス×魚のDHA×生姜のジンゲロールが腸と心血管を同時にケア。',time:20,diff:'易',cal:380,dga:5,tags:['dinner','fish','highprotein','lowcalorie'],goalMatch:['heart','gut','beauty','bone'],highlights:['豆豉プロバイオ','DHA豊富','低脂肪蒸し'],nut:{protein:36,carbs:38,fat:10,fiber:4,satFat:1.5,sodium:680,calcium:95,iron:2.8,vitD:360,potassium:720,omega3:2.0,vitC:10,folate:45,zinc:3.2},dgaG:{veg:1.0,fruit:0,grain:2.5,protein:3.5,dairy:0,oils:0.5},dgaNote:'豆豉は黒大豆を塩と麹で発酵させた中国の伝統発酵食品。ナットウキナーゼに似た繊維溶解酵素・プロバイオティクス・大豆イソフラボンを含みます。蒸し調理でDHAの酸化を防ぎ、豆豉の旨味が塩分使用量を最小化してDGAのナトリウム目標達成を助けます。',ingredients:['白身魚（スズキ・タラ等）2切れ','豆豉（トウチ）大さじ1','にんにく 2片','生姜 2かけ','長ねぎ 適量','醤油 大さじ1','酒 大さじ1','ごま油 大さじ1.5','パクチー（または三つ葉）適量','玄米ご飯 150g'],steps:['豆豉・にんにく・生姜をみじん切りにして醤油・酒と合わせる。','魚に豆豉ソースを塗り、蒸し器で8〜10分蒸す。','ねぎの千切りをたっぷりのせ、熱々ごま油を回しかける。','パクチーを飾り、玄米ご飯と盛り合わせる。']}
+,{id:97,emoji:'🥬',grad:'linear-gradient(135deg,#43e97b,#38f9d7)',cat:'昼食',catKey:'lunch',name:'豆腐とほうれん草の中華炒め × 玄米',desc:'豆腐の大豆タンパク×ほうれん草の鉄・葉酸×生姜・にんにくの抗炎症成分が揃う最速・最安・最高栄養の中華炒め。シンプルだが栄養密度はアプリ最高クラス。',time:15,diff:'易',cal:350,dga:5,tags:['lunch','vegetarian','highprotein','lowcalorie'],goalMatch:['beauty','bone','gut','weight'],highlights:['葉酸210μg','鉄6.2mg','大豆タンパク'],nut:{protein:22,carbs:34,fat:14,fiber:7,satFat:2.2,sodium:520,calcium:295,iron:6.2,vitD:0,potassium:820,omega3:0.5,vitC:32,folate:210,zinc:2.8},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:2.0,dairy:0,oils:1.5},dgaNote:'ほうれん草の葉酸（210μg/100g）と鉄（3.7mg/100g）はDGA 2025-2030が重視する栄養素。木綿豆腐のカルシウム・マグネシウムが骨密度を維持し、ビタミンCが非ヘム鉄の吸収率を最大6倍向上させます。にんにくのアリシンが腸内の有害菌を抑制し腸内環境を改善します。',ingredients:['木綿豆腐 200g','ほうれん草 150g','にんにく 2片','生姜 1かけ','醤油 大さじ1','塩 少々','ごま油 大さじ1','白ごま 少々','玄米ご飯 150g'],steps:['豆腐を水切りし1.5cm角に切る。ほうれん草を3cm長さに切る。','フライパンにごま油を熱し、にんにく・生姜を炒めて豆腐を加えて焼き色をつける。','ほうれん草を加えてさっと炒め、醤油・塩で調味する。','白ごまをふり、玄米ご飯と盛り合わせる。']}
+,{id:98,emoji:'🍤',grad:'linear-gradient(135deg,#f7971e,#ffd200)',cat:'夕食',catKey:'dinner',name:'チンゲン菜と豚肉のオイスター炒め × 玄米',desc:'シャキシャキのチンゲン菜×豚肉のビタミンB1×オイスターソースの旨味が揃う10分完成の中華定番炒め。DGAの葉野菜摂取とタンパク質目標を一皿で達成。',time:15,diff:'易',cal:430,dga:4,tags:['dinner','highprotein','lowcalorie'],goalMatch:['energy','bone','weight','gut'],highlights:['ビタミンK豊富','ビタミンB1','葉野菜たっぷり'],nut:{protein:28,carbs:40,fat:14,fiber:5,satFat:4.2,sodium:640,calcium:155,iron:3.8,vitD:12,potassium:720,omega3:0.3,vitC:42,folate:88,zinc:3.5},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:2.5,dairy:0,oils:1.0},dgaNote:'チンゲン菜はカルシウム・ビタミンK・β-カロテンが豊富な葉野菜。ビタミンKはカルシウムを骨に取り込むオステオカルシンの活性化に不可欠で、DGA 2025-2030が推奨する骨密度維持の重要栄養素です。豚肉のビタミンB1と組み合わせることで代謝機能を高めます。',ingredients:['豚薄切り 120g','チンゲン菜 2株','にんにく 2片','生姜 少々','オイスターソース 大さじ1.5','醤油 小さじ1','酒 大さじ1','ごま油 小さじ1','片栗粉 小さじ1','玄米ご飯 150g'],steps:['豚肉を食べやすく切り片栗粉をまぶす。チンゲン菜を株ごと縦4等分に切る。','フライパンにごま油を強火で熱し、にんにく・生姜を炒めて豚肉を加える。','チンゲン菜を加えてさっと炒め、オイスターソース・醤油・酒で調味する。','玄米ご飯と盛り合わせる。']}
+,{id:99,emoji:'🫕',grad:'linear-gradient(135deg,#1a1a2e,#533483)',cat:'夕食',catKey:'dinner',name:'麻辣豆腐鍋（ヘルシー版）× 玄米',desc:'四川麻辣を鍋スタイルに。豆腐×きのこ×野菜をたっぷり入れた低カロリーで食べ応えある鍋料理。花椒の抗炎症×豆腐のイソフラボン×野菜多様性のDGA完全準拠版。',time:25,diff:'易',cal:380,dga:4,tags:['dinner','vegetarian','gut'],goalMatch:['weight','gut','heart','beauty'],highlights:['低カロリー満腹','花椒抗炎症','多品目野菜'],nut:{protein:22,carbs:38,fat:14,fiber:10,satFat:2.5,sodium:720,calcium:255,iron:5.5,vitD:0,potassium:880,omega3:0.4,vitC:42,folate:108,zinc:2.8},dgaG:{veg:3.5,fruit:0,grain:2.0,protein:2.0,dairy:0,oils:1.5},dgaNote:'麻辣（マーラー）のマー（花椒のしびれ）とラー（唐辛子の辛味）は体の熱産生を高め代謝を促進します。カプサイシンは脂肪酸化を促し、花椒のヒドロキシ-α-サンショオールがCOX-2を抑制して炎症を鎮めます。植物性の鍋でDGAの野菜3カップ以上を一食で楽に達成できます。',ingredients:['絹ごし豆腐 250g','白菜 200g','えのき 100g','しめじ 100g','もやし 100g','豆板醤 大さじ1.5','花椒粉 小さじ1','にんにく 3片','生姜 2かけ','鶏がらスープ 500ml','醤油 大さじ1.5','ごま油 小さじ1','玄米ご飯 150g'],steps:['にんにく・生姜・豆板醤をごま油で炒めて香りを出す。','スープを加えて煮立て、白菜・きのこを入れて5分煮る。','豆腐・もやしを加えてさらに3分煮る。','醤油・花椒粉で調味し、玄米ご飯と盛り合わせる。']}
+,{id:100,emoji:'🍱',grad:'linear-gradient(135deg,#f7797d,#fbd3e9)',cat:'夕食',catKey:'dinner',name:'中華三鮮（えび・豚・きのこ）× 玄米',desc:'えびの海鮮×豚肉の赤身×きのこの食物繊維という中国の「三鮮（三つの鮮味）」を一皿に凝縮した広東家庭料理の集大成。和洋中100品目達成の記念の一皿。',time:25,diff:'中',cal:470,dga:5,tags:['dinner','fish','highprotein'],goalMatch:['energy','heart','bone','gut'],highlights:['三種タンパク','β-グルカン豊富','DHA+B1+イソフラボン'],nut:{protein:36,carbs:44,fat:14,fiber:8,satFat:3.2,sodium:680,calcium:125,iron:4.5,vitD:85,potassium:880,omega3:0.8,vitC:28,folate:82,zinc:5.2},dgaG:{veg:2.5,fruit:0,grain:2.5,protein:3.5,dairy:0,oils:1.0},dgaNote:'三鮮の概念はDGA 2025-2030の「タンパク質多様性」と完全に一致します。えびのセレン・豚のビタミンB1・きのこのβ-グルカンが異なるメカニズムで免疫系を強化します。DGA基準に基づいた和洋中100品のレシピを通じて、本物の食品による健康寿命の延伸を目指しましょう。',ingredients:['むきえび 100g','豚もも薄切り 80g','まいたけ 80g','しいたけ 4枚','ブロッコリー 100g','にんにく 2片','生姜 1かけ','オイスターソース 大さじ2','醤油 大さじ1','酒 大さじ1','ごま油 小さじ1','片栗粉 小さじ1','玄米ご飯 150g'],steps:['えびを背わたを取り塩・酒でもみ洗い。豚肉を一口大に切り片栗粉をまぶす。きのこをほぐし、ブロッコリーを塩ゆでにする。','フライパンにごま油を熱し、にんにく・生姜を炒めてえびと豚肉を加えて炒める。','きのこ・ブロッコリーを加えてさっと炒め、オイスターソース・醤油・酒で調味する。','玄米ご飯とともに盛り付けて完成。']}
+];
+
+// ════════════════════════════════════
+// ALL RECIPES (base + custom)
+// ════════════════════════════════════
+function allRecipes(){return[...BASE,...loadLS('customRecipes',[])]}
+
+// ════════════════════════════════════
+// APP INIT
+// ════════════════════════════════════
+function initApp(){
+  document.getElementById('pt').textContent=profText();
+  renderTargets();
+  renderBanner();
+  AF='all'; document.getElementById('si').value='';
+  flt();
+  renderLogTab();
+  renderMyTab();
+}
+function profText(){
+  const am={'19-30':'20〜30代','31-50':'30〜50代','51+':'51歳〜'};
+  const sm={male:'男性',female:'女性'};
+  const ac={sedentary:'低活動',moderate:'中活動',active:'高活動'};
+  return`${sm[P.sex]||''} / ${am[P.age]||''} / ${ac[P.activity]||''}`;
+}
+function renderTargets(){
+  const T=calcT();
+  const items=[
+    {n:'カロリー',v:T.calories,u:'kcal',c:'#2d6a4f',p:100},
+    {n:'タンパク質',v:T.protein,u:'g',c:'#52b788',p:80},
+    {n:'炭水化物',v:T.carbs,u:'g',c:'#f4a261',p:70},
+    {n:'脂質',v:T.fat,u:'g',c:'#e76f51',p:60},
+    {n:'食物繊維',v:T.fiber,u:'g',c:'#457b9d',p:55},
+    {n:'カルシウム',v:T.calcium,u:'mg',c:'#74c69d',p:45},
+    {n:'鉄分',v:T.iron,u:'mg',c:'#e63946',p:50},
+    {n:'Na上限',v:T.sodium,u:'mg',c:'#adb5bd',p:30},
+  ];
+  document.getElementById('daily-targets').innerHTML=items.map(x=>`
+    <div class="dt"><div class="dh"><span class="dn">${x.n}</span><span class="dv">${x.v.toLocaleString()} ${x.u}</span></div>
+    <div class="pb2"><div class="pf" style="width:${x.p}%;background:${x.c}"></div></div></div>`).join('');
+}
+function renderBanner(){
+  const gm={weight:'体重管理',heart:'心臓ケア',bone:'骨強化',energy:'エネルギー',beauty:'美肌・美髪',gut:'腸活'};
+  const g=P.goals.map(x=>gm[x]).join('・')||'健康';
+  document.getElementById('rec-title').textContent=`${g} に最適なレシピ`;
+  const s=getSorted();
+  document.getElementById('rec-score').textContent=(s.length>0?ms(s[0]):'--')+'%';
+}
+
+// ════════════════════════════════════
+// SCORING
+// ════════════════════════════════════
+function ms(r){
+  const g=P.goals; if(!g.length)return 75;
+  const h=r.goalMatch.filter(x=>g.includes(x)).length;
+  const m=Math.min(g.length,r.goalMatch.length);
+  let s=58; if(m>0)s+=Math.round(h/m*36);
+  s+=(r.dga||3); return Math.min(s,98);
+}
+function getSorted(){return[...allRecipes()].sort((a,b)=>ms(b)-ms(a))}
+
+// ════════════════════════════════════
+// FILTER & RENDER GRID
+// ════════════════════════════════════
+function flt(){
+  const q=document.getElementById('si').value.toLowerCase();
+  let list=allRecipes().filter(r=>{
+    const ms2=!q||r.name.toLowerCase().includes(q)||(r.desc||'').toLowerCase().includes(q)||r.ingredients.some(i=>i.toLowerCase().includes(q));
+    const mf=AF==='all'||r.catKey===AF||r.tags.includes(AF);
+    return ms2&&mf;
+  }).sort((a,b)=>ms(b)-ms(a));
+  renderGrid(list,'rg',true);
+}
+function setF(f,el){
+  AF=f;
+  document.querySelectorAll('.fcs .chip').forEach(c=>c.classList.remove('act'));
+  el.classList.add('act');
+  flt();
+}
+function renderGrid(list,gid,showLog){
+  const g=document.getElementById(gid);
+  if(!list.length){g.innerHTML='<div class="no-results" style="grid-column:1/-1"><div class="ni">🔍</div><p>該当するレシピがありません</p></div>';return}
+  const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+  g.innerHTML=list.map(r=>{
+    const sc=ms(r);
+    const isCustom=r.custom;
+    return`<div class="rc" onclick="openDet(${r.id},${isCustom?1:0})">
+      <div class="rth" style="background:${r.grad||'linear-gradient(135deg,#52b788)'}">
+        <span>${r.emoji||'🍽️'}</span>
+        <div class="rb2">
+          <span class="bdg bg">${r.diff||'中'}</span>
+          ${sc>=85?'<span class="bdg bo">おすすめ</span>':''}
+          ${isCustom?'<span class="bdg" style="background:#f0a500">オリジナル</span>':''}
+        </div>
+      </div>
+      <div class="ri">
+        <div class="rcat">${r.cat}</div>
+        <div class="rn">${r.name}</div>
+        <div class="rm"><span>⏱ ${r.time}分</span><span>🔥 ${r.cal}kcal</span><span>★${sc}%</span></div>
+        <div class="nts">${(r.highlights||[]).map(h=>`<span class="nt">${h}</span>`).join('')}</div>
+        <div class="rf">
+          <div class="rmac">P: ${r.nut.protein}g <small>/ C: ${r.nut.carbs}g / F: ${r.nut.fat}g</small></div>
+          <div class="dstar">${stars(r.dga||3)}</div>
+        </div>
+        ${showLog?`<button class="log-btn" onclick="event.stopPropagation();logMeal(${r.id},${isCustom?1:0})">＋ 食事に記録</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════════
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));
+  el.classList.add('act');
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('act'));
+  document.getElementById('tab-'+name).classList.add('act');
+  if(name==='log')renderLogTab();
+  if(name==='my')renderMyTab();
+}
+
+// ════════════════════════════════════
+// MEAL LOG
+// ════════════════════════════════════
+function getMealLog(){return loadLS('mealLog',[])}
+function saveMealLog(log){saveLS('mealLog',log)}
+
+function logMeal(id,isCustom){
+  const r=isCustom?loadLS('customRecipes',[]).find(x=>x.id===id):BASE.find(x=>x.id===id);
+  if(!r)return;
+  const log=getMealLog();
+  log.push({date:logDate,recipeId:id,isCustom:!!isCustom,name:r.name,emoji:r.emoji||'🍽️',cal:r.cal,nut:{protein:r.nut.protein,carbs:r.nut.carbs,fat:r.nut.fat,fiber:r.nut.fiber,iron:r.nut.iron,calcium:r.nut.calcium},ts:Date.now()});
+  saveMealLog(log);
+  // brief feedback
+  const btn=event.target;
+  btn.textContent='✓ 記録しました！';btn.style.background='var(--g)';btn.style.color='#fff';
+  setTimeout(()=>{btn.textContent='＋ 食事に記録';btn.style.background='';btn.style.color=''},1500);
+  if(document.getElementById('tab-log').classList.contains('act'))renderLogTab();
+}
+
+function renderLogTab(){
+  const T=calcT();
+  const log=getMealLog().filter(e=>e.date===logDate);
+  const tots={cal:0,protein:0,carbs:0,fat:0,fiber:0,iron:0,calcium:0};
+  log.forEach(e=>{tots.cal+=e.cal||0;tots.protein+=e.nut.protein||0;tots.carbs+=e.nut.carbs||0;tots.fat+=e.nut.fat||0;tots.fiber+=e.nut.fiber||0;tots.iron+=e.nut.iron||0;tots.calcium+=e.nut.calcium||0});
+
+  // Date label
+  const d=new Date(logDate+'T00:00:00');
+  const today=dateKey(new Date());
+  const lbl=logDate===today?`今日 (${d.getMonth()+1}/${d.getDate()})`:logDate===dateKey(new Date(Date.now()-86400000))?`昨日 (${d.getMonth()+1}/${d.getDate()})`:logDate;
+  document.getElementById('log-date-label').textContent=lbl;
+
+  // Nutrient progress bars
+  const npItems=[
+    {n:'カロリー',v:tots.cal,t:T.calories,u:'kcal',c:'#2d6a4f'},
+    {n:'タンパク質',v:tots.protein,t:T.protein,u:'g',c:'#52b788'},
+    {n:'炭水化物',v:tots.carbs,t:T.carbs,u:'g',c:'#f4a261'},
+    {n:'脂質',v:tots.fat,t:T.fat,u:'g',c:'#e76f51'},
+    {n:'食物繊維',v:tots.fiber,t:T.fiber,u:'g',c:'#457b9d'},
+    {n:'鉄分',v:tots.iron,t:T.iron,u:'mg',c:'#e63946'},
+  ];
+  document.getElementById('nut-prog').innerHTML=npItems.map(x=>{
+    const p=Math.min(Math.round(x.v/x.t*100),100);
+    return`<div class="np-item">
+      <div class="np-name">${x.n}</div>
+      <div class="np-vals"><span>${x.v.toFixed(1)} ${x.u}</span><span>${p}%</span></div>
+      <div class="np-bar"><div class="np-fill" style="width:${p}%;background:${p>100?'#e63946':x.c}"></div></div>
+    </div>`;
+  }).join('');
+
+  // Totals bar
+  const tg=document.getElementById('log-total');
+  if(log.length>0){
+    tg.style.display='block';
+    document.getElementById('tot-grid').innerHTML=`
+      <div class="tot-item"><div class="tot-v">${tots.cal}</div><div class="tot-l">kcal</div></div>
+      <div class="tot-item"><div class="tot-v">${tots.protein}g</div><div class="tot-l">タンパク質</div></div>
+      <div class="tot-item"><div class="tot-v">${tots.carbs}g</div><div class="tot-l">炭水化物</div></div>
+      <div class="tot-item"><div class="tot-v">${tots.fat}g</div><div class="tot-l">脂質</div></div>`;
+  } else tg.style.display='none';
+
+  // Entry list
+  const ll=document.getElementById('log-list');
+  if(!log.length){ll.innerHTML='<div class="log-empty">🍽️<br>まだ食事が記録されていません<br><small>レシピタブの「食事に記録」ボタンで追加できます</small></div>';return}
+  ll.innerHTML=log.map((e,i)=>{
+    const t=new Date(e.ts);
+    const hm=`${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}`;
+    return`<div class="log-entry">
+      <div class="le-emoji">${e.emoji}</div>
+      <div class="le-info">
+        <div class="le-name">${e.name}</div>
+        <div class="le-meta">${hm} · ${e.cal}kcal · P:${e.nut.protein}g C:${e.nut.carbs}g F:${e.nut.fat}g</div>
+      </div>
+      <button class="le-del" onclick="delLog(${i})" title="削除">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+function delLog(idx){
+  if(!confirm('この記録を削除しますか？'))return;
+  const log=getMealLog();
+  const filtered=log.filter(e=>e.date===logDate);
+  const others=log.filter(e=>e.date!==logDate);
+  filtered.splice(idx,1);
+  saveMealLog([...others,...filtered]);
+  renderLogTab();
+}
+
+function changeLogDate(delta){
+  const d=new Date(logDate+'T00:00:00');
+  d.setDate(d.getDate()+delta);
+  if(d>new Date())return;
+  logDate=dateKey(d);
+  renderLogTab();
+}
+
+// ════════════════════════════════════
+// MY RECIPES TAB
+// ════════════════════════════════════
+function renderMyTab(){
+  const customs=loadLS('customRecipes',[]);
+  const g=document.getElementById('my-rg');
+  if(!customs.length){
+    g.innerHTML='<div class="no-results" style="grid-column:1/-1"><div class="ni">📝</div><p>まだオリジナルレシピがありません<br><small>「オリジナルレシピを追加する」ボタンから登録してください</small></p></div>';
+    return;
+  }
+  renderGrid(customs,'my-rg',true);
+}
+
+// ════════════════════════════════════
+// CUSTOM RECIPE FORM
+// ════════════════════════════════════
+let editingId=null;
+function openForm(id=null){
+  editingId=id;
+  // reset form
+  ['f-name','f-emoji','f-time','f-cal','f-pro','f-car','f-fat','f-fib','f-iro','f-cal2','f-ing','f-stp','f-note'].forEach(i=>{
+    const el=document.getElementById(i);
+    if(el)el.value='';
+  });
+  document.getElementById('f-cat').value='dinner';
+  document.getElementById('f-diff').value='中';
+  document.querySelectorAll('.gc').forEach(el=>{el.classList.remove('checked');el.querySelector('input').checked=false});
+
+  if(id!==null){
+    const customs=loadLS('customRecipes',[]);
+    const r=customs.find(x=>x.id===id);
+    if(r){
+      document.getElementById('f-name').value=r.name;
+      document.getElementById('f-emoji').value=r.emoji||'';
+      document.getElementById('f-cat').value=r.catKey;
+      document.getElementById('f-diff').value=r.diff||'中';
+      document.getElementById('f-time').value=r.time||'';
+      document.getElementById('f-cal').value=r.cal||'';
+      document.getElementById('f-pro').value=r.nut.protein||'';
+      document.getElementById('f-car').value=r.nut.carbs||'';
+      document.getElementById('f-fat').value=r.nut.fat||'';
+      document.getElementById('f-fib').value=r.nut.fiber||'';
+      document.getElementById('f-iro').value=r.nut.iron||'';
+      document.getElementById('f-cal2').value=r.nut.calcium||'';
+      document.getElementById('f-ing').value=(r.ingredients||[]).join('\n');
+      document.getElementById('f-stp').value=(r.steps||[]).join('\n');
+      document.getElementById('f-note').value=r.dgaNote||'';
+      document.querySelectorAll('.gc').forEach(el=>{
+        const v=el.querySelector('input').value;
+        if((r.goalMatch||[]).includes(v)){el.classList.add('checked');el.querySelector('input').checked=true}
+      });
+    }
+  }
+  document.getElementById('form-modal').classList.add('open');
+}
+function closeForm(){document.getElementById('form-modal').classList.remove('open')}
+
+const catNames={breakfast:'朝食',lunch:'昼食',dinner:'夕食',snack:'間食'};
+const gradients=['linear-gradient(135deg,#667eea,#764ba2)','linear-gradient(135deg,#f6d365,#fda085)','linear-gradient(135deg,#11998e,#38ef7d)','linear-gradient(135deg,#f093fb,#f5576c)','linear-gradient(135deg,#4facfe,#00f2fe)','linear-gradient(135deg,#43e97b,#38f9d7)','linear-gradient(135deg,#fa709a,#fee140)','linear-gradient(135deg,#a18cd1,#fbc2eb)'];
+
+function saveRecipe(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('レシピ名を入力してください');return}
+  const catKey=document.getElementById('f-cat').value;
+  const goals=[];
+  document.querySelectorAll('.gc.checked input').forEach(el=>goals.push(el.value));
+  const ingredients=document.getElementById('f-ing').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const steps=document.getElementById('f-stp').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const customs=loadLS('customRecipes',[]);
+  const newRec={
+    id:editingId!==null?editingId:Date.now(),
+    custom:true,
+    emoji:document.getElementById('f-emoji').value||'🍽️',
+    grad:gradients[Math.floor(Math.random()*gradients.length)],
+    cat:catNames[catKey]||'夕食',catKey,
+    name,
+    desc:document.getElementById('f-note').value||'オリジナルレシピ',
+    time:parseInt(document.getElementById('f-time').value)||20,
+    diff:document.getElementById('f-diff').value,
+    cal:parseInt(document.getElementById('f-cal').value)||0,
+    dga:3,
+    tags:[catKey],
+    goalMatch:goals,
+    highlights:goals.slice(0,3).map(g=>({weight:'体重管理',heart:'心臓ケア',bone:'骨強化',energy:'エネルギー',beauty:'美肌・美髪',gut:'腸活'}[g]||g)),
+    nut:{
+      protein:parseFloat(document.getElementById('f-pro').value)||0,
+      carbs:parseFloat(document.getElementById('f-car').value)||0,
+      fat:parseFloat(document.getElementById('f-fat').value)||0,
+      fiber:parseFloat(document.getElementById('f-fib').value)||0,
+      satFat:0,sodium:0,calcium:parseFloat(document.getElementById('f-cal2').value)||0,
+      iron:parseFloat(document.getElementById('f-iro').value)||0,
+      vitD:0,potassium:0,omega3:0,vitC:0,folate:0,zinc:0
+    },
+    dgaG:{veg:0,fruit:0,grain:0,protein:0,dairy:0,oils:0},
+    dgaNote:document.getElementById('f-note').value||'',
+    ingredients,steps
+  };
+  if(editingId!==null){
+    const idx=customs.findIndex(x=>x.id===editingId);
+    if(idx>-1)customs[idx]=newRec; else customs.push(newRec);
+  } else customs.push(newRec);
+  saveLS('customRecipes',customs);
+  closeForm();
+  renderMyTab();
+  flt();
+  // switch to my recipes tab
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('.tab')[2].classList.add('act');
+  document.getElementById('tab-my').classList.add('act');
+}
+
+function deleteCustomRecipe(id){
+  if(!confirm('このレシピを削除しますか？'))return;
+  const customs=loadLS('customRecipes',[]).filter(x=>x.id!==id);
+  saveLS('customRecipes',customs);
+  renderMyTab();flt();
+  document.getElementById('det-modal').classList.remove('open');
+}
+
+// ════════════════════════════════════
+// DETAIL MODAL
+// ════════════════════════════════════
+function openDet(id,isCustom){
+  const r=isCustom?loadLS('customRecipes',[]).find(x=>x.id===id):BASE.find(x=>x.id===id);
+  if(!r)return;
+  const T=calcT();
+  const sc=ms(r);
+  const stars='★'.repeat(r.dga||3)+'☆'.repeat(5-(r.dga||3));
+  const gL={weight:'⚖️ 体重管理',heart:'❤️ 心臓ケア',bone:'🦴 骨強化',energy:'⚡ エネルギー',beauty:'✨ 美肌・美髪',gut:'🌿 腸活'};
+  const ug=r.goalMatch.filter(g=>P.goals.includes(g));
+  const nr=[
+    ['エネルギー',r.cal+' kcal',Math.round(r.cal/T.calories*100)],
+    ['タンパク質',r.nut.protein+' g',Math.round(r.nut.protein/T.protein*100)],
+    ['炭水化物',r.nut.carbs+' g',Math.round(r.nut.carbs/T.carbs*100)],
+    ['脂質',r.nut.fat+' g',Math.round(r.nut.fat/T.fat*100)],
+    ['食物繊維',r.nut.fiber+' g',Math.round(r.nut.fiber/T.fiber*100)],
+    ['カルシウム',r.nut.calcium+' mg',Math.round(r.nut.calcium/T.calcium*100)],
+    ['鉄分',r.nut.iron+' mg',Math.round(r.nut.iron/T.iron*100)],
+  ];
+  const dg=[{n:'野菜',k:'veg',u:'カップ',t:3.0},{n:'果物',k:'fruit',u:'カップ',t:2.0},{n:'全粒穀物',k:'grain',u:'oz',t:3},{n:'タンパク質',k:'protein',u:'oz',t:7.0},{n:'乳製品',k:'dairy',u:'カップ',t:3},{n:'油脂',k:'oils',u:'tsp',t:5}];
+
+  // ネスト回避：複雑な部分を事前に文字列として組み立てる
+  var goalTagsHtml = '';
+  if(r.goalMatch.length){
+    var tags='';
+    r.goalMatch.forEach(function(g){
+      var cls=ug.includes(g)?'gtm':'gto';
+      var chk=ug.includes(g)?'✓ ':'';
+      tags+='<span class="gta '+cls+'">'+chk+(gL[g]||g)+'</span>';
+    });
+    goalTagsHtml='<div class="sec">💡 目標との相性</div><div class="gts">'+tags+'</div>';
+  }
+
+  var dgaNoteHtml='';
+  if(r.dgaNote){
+    dgaNoteHtml='<div class="dn2"><p><strong>🔬 栄養ポイント：</strong><br>'+r.dgaNote+'</p></div>';
+  }
+
+  var dgaGroupsHtml='';
+  if(!r.custom&&r.dgaG){
+    var rows='';
+    dg.forEach(function(x){
+      var v=r.dgaG[x.k]||0;
+      var p=Math.min(Math.round(v/x.t*100/3),100);
+      rows+='<div class="dgr"><span>'+x.n+'</span><div class="pb2"><div class="pf" style="width:'+p+'%;background:var(--gl)"></div></div><span style="color:var(--muted)">'+v+' '+x.u+'</span></div>';
+    });
+    dgaGroupsHtml='<div class="dgb"><h4>📊 DGA 食品グループ貢献度（1食分）</h4>'+rows+'<p style="font-size:.72rem;color:var(--muted);margin-top:8px">⚠ バーは1食/1日目標の33%基準</p></div>';
+  }
+
+  var ingHtml='';
+  (r.ingredients||[]).forEach(function(i){ingHtml+='<div class="ii"><div class="id"></div><span>'+i+'</span></div>';});
+
+  var stepHtml='';
+  (r.steps||[]).forEach(function(s,i){stepHtml+='<div class="si2"><div class="sn">'+(i+1)+'</div><div class="st2">'+s+'</div></div>';});
+
+  var nutHtml='';
+  nr.forEach(function(row){
+    var pct=Math.min(row[2],100);
+    var clr=row[2]>100?'#e63946':'var(--gl)';
+    var sp=row[2]>100?'color:#e63946;font-weight:800':'';
+    nutHtml+='<tr><td>'+row[0]+'</td><td><strong>'+row[1]+'</strong></td><td><div style="display:flex;align-items:center;gap:6px"><div class="dvb"><div class="dvf" style="width:'+pct+'%;background:'+clr+'"></div></div><span style="font-size:.73rem;'+sp+'">'+row[2]+'%</span></div></td></tr>';
+  });
+
+  var editBtns='';
+  if(r.custom){
+    editBtns='<div style="display:flex;gap:8px;margin-top:8px">'
+      +'<button onclick="closeDetAndEdit('+r.id+')" style="flex:1;padding:10px;background:#e6f4ee;border:none;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;color:var(--gd)">✏️ 編集する</button>'
+      +'<button onclick="deleteCustomRecipe('+r.id+')" style="padding:10px 16px;background:#ffeef0;border:none;border-radius:8px;font-size:.85rem;font-weight:700;cursor:pointer;color:#e63946">🗑️ 削除</button>'
+      +'</div>';
+  }
+
+  var customBadge=r.custom?'<span class="custom-badge">オリジナル</span>':'';
+
+  document.getElementById('det-inner').innerHTML=''
+    +'<div class="mh" style="background:'+(r.grad||'#ccc')+'">'
+    +'<span>'+(r.emoji||'🍽️')+'</span>'
+    +'<button class="mc2" onclick="document.getElementById(\'det-modal\').classList.remove(\'open\')">✕</button>'
+    +'</div>'
+    +'<div class="mb">'
+    +'<div class="mcat">'+r.cat+' · DGA '+stars+' · マッチ度 '+sc+'%'+customBadge+'</div>'
+    +'<h2 class="mti">'+r.name+'</h2>'
+    +'<p class="mde">'+(r.desc||'')+'</p>'
+    +'<div class="ms">'
+    +'<div class="sb2"><div class="sv">'+r.cal+'</div><div class="sl">kcal</div></div>'
+    +'<div class="sb2"><div class="sv">'+r.nut.protein+'g</div><div class="sl">タンパク質</div></div>'
+    +'<div class="sb2"><div class="sv">'+r.time+'分</div><div class="sl">調理時間</div></div>'
+    +'<div class="sb2"><div class="sv">'+r.nut.fiber+'g</div><div class="sl">食物繊維</div></div>'
+    +'</div>'
+    +'<button class="add-log-btn" onclick="logMeal('+r.id+','+(isCustom?1:0)+');document.getElementById(\'det-modal\').classList.remove(\'open\')">＋ 今日の食事に記録する</button>'
+    +goalTagsHtml
+    +dgaNoteHtml
+    +dgaGroupsHtml
+    +'<div class="sec">🛒 食材（1人分）</div>'
+    +'<div class="ig">'+ingHtml+'</div>'
+    +'<div class="sec">👨‍🍳 作り方</div>'
+    +'<div class="sl2">'+stepHtml+'</div>'
+    +'<div class="sec">📈 栄養成分（%DV）</div>'
+    +'<table class="nt2"><thead><tr><th>栄養素</th><th>含有量</th><th style="min-width:95px">1日目標比</th></tr></thead>'
+    +'<tbody>'+nutHtml+'</tbody></table>'
+    +editBtns
+    +'<p style="font-size:.7rem;color:var(--muted);text-align:center;padding:8px 0 14px">※ 栄養成分値は推定値です。参考文献: Dietary Guidelines for Americans 2025-2030 (USDA/HHS, January 2026)</p>'
+    +'</div>';
+  document.getElementById('det-modal').classList.add('open');
+}
+function closeDetAndEdit(id){
+  document.getElementById('det-modal').classList.remove('open');
+  setTimeout(()=>openForm(id),200);
+}
+function closeDet(e){if(e.target===document.getElementById('det-modal'))document.getElementById('det-modal').classList.remove('open')}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.getElementById('det-modal').classList.remove('open');
+    document.getElementById('form-modal').classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
